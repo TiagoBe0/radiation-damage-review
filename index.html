@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Conocimiento - Daño por Radiación en Materiales</title>
+<style>
+  :root {
+    --bg: #FAFAF8; --bg2: #F1F0EC; --bg3: #E8E7E3;
+    --text: #1a1a1a; --text2: #555; --text3: #888;
+    --border: rgba(0,0,0,0.1);
+    --purple: #7F77DD; --purple-light: #EEEDFE; --purple-dark: #3C3489;
+    --teal: #1D9E75; --teal-light: #E1F5EE; --teal-dark: #085041;
+    --coral: #D85A30; --coral-light: #FAECE7; --coral-dark: #712B13;
+    --blue: #378ADD; --blue-light: #E6F1FB; --blue-dark: #0C447C;
+    --amber: #BA7517; --amber-light: #FAEEDA; --amber-dark: #633806;
+    --green: #639922; --green-light: #EAF3DE; --green-dark: #27500A;
+    --red: #E24B4A; --red-light: #FCEBEB; --red-dark: #791F1F;
+    --pink: #D4537E; --pink-light: #FBEAF0; --pink-dark: #72243E;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a; --bg2: #252524; --bg3: #333;
+      --text: #e8e7e3; --text2: #aaa; --text3: #777;
+      --border: rgba(255,255,255,0.1);
+      --purple-light: #26215C; --purple-dark: #CECBF6;
+      --teal-light: #04342C; --teal-dark: #9FE1CB;
+      --coral-light: #4A1B0C; --coral-dark: #F5C4B3;
+      --blue-light: #042C53; --blue-dark: #B5D4F4;
+      --amber-light: #412402; --amber-dark: #FAC775;
+      --green-light: #173404; --green-dark: #C0DD97;
+      --red-light: #501313; --red-dark: #F7C1C1;
+      --pink-light: #4B1528; --pink-dark: #F4C0D1;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  
+  .header { padding: 2rem 2rem 1rem; max-width: 1200px; margin: 0 auto; }
+  .header h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .header .subtitle { font-size: 0.85rem; color: var(--text2); margin-bottom: 1rem; }
+  
+  .sources { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .source-tag { font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--text2); background: var(--bg2); }
+  
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 1.5rem; font-size: 0.75rem; color: var(--text3); }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .filter-btn { font-size: 0.75rem; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.2s; }
+  .filter-btn:hover, .filter-btn.active { background: var(--bg3); color: var(--text); border-color: var(--text3); }
+  
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem 3rem; }
+  
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+  
+  .card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 18px; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+  .card:hover { border-color: var(--text3); transform: translateY(-1px); }
+  .card.expanded { grid-column: 1 / -1; }
+  .card.hidden { display: none; }
+  
+  .card-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  
+  .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .card-num { font-size: 0.65rem; font-weight: 600; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+  .card-title { font-size: 0.9rem; font-weight: 600; }
+  .card-source { font-size: 0.65rem; padding: 2px 6px; border-radius: 6px; background: var(--bg3); color: var(--text3); margin-left: auto; white-space: nowrap; }
+  .card-sub { font-size: 0.8rem; color: var(--text2); }
+  
+  .card-detail { display: none; margin-top: 14px; padding-top: 14px; border-top: 0.5px solid var(--border); }
+  .card.expanded .card-detail { display: block; }
+  
+  .detail-block { margin-bottom: 14px; }
+  .detail-label { font-size: 0.65rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px; }
+  .detail-text { font-size: 0.8rem; color: var(--text2); line-height: 1.65; }
+  
+  .tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; }
+  
+  .conn-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+  .conn { font-size: 0.7rem; padding: 3px 10px; border-radius: 10px; border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.2s; }
+  .conn:hover { background: var(--bg3); color: var(--text); }
+  
+  .expand-hint { font-size: 0.7rem; color: var(--text3); margin-top: 6px; }
+  
+  .section-title { grid-column: 1 / -1; font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; padding: 1.5rem 0 0.25rem; border-top: 0.5px solid var(--border); margin-top: 8px; }
+  .section-title:first-child { border-top: none; margin-top: 0; }
+  
+  .full-width { grid-column: 1 / -1; }
+  
+  .equation { font-family: 'Courier New', monospace; background: var(--bg3); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; margin: 6px 0; overflow-x: auto; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Mapa de conocimiento: Daño por radiación en materiales</h1>
+  <p class="subtitle">Integración de dos fuentes fundamentales sobre daño primario, modelado multiescala y materiales para fusión nuclear</p>
+  
+  <div class="sources">
+    <span class="source-tag">R — Reali et al., J. Nucl. Mater. 2026 (Workshop Fusión)</span>
+    <span class="source-tag">N — Nordlund et al., J. Nucl. Mater. 2018 (Primary Damage Review)</span>
+  </div>
+  
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--coral)"></div>Daño primario</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Materiales</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Modelos analíticos</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Simulación atomística</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Machine learning</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Multiescala</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--pink)"></div>Transmutación</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Brechas y futuro</div>
+  </div>
+  
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCards('all')">Todos</button>
+    <button class="filter-btn" onclick="filterCards('damage')">Daño primario</button>
+    <button class="filter-btn" onclick="filterCards('materials')">Materiales</button>
+    <button class="filter-btn" onclick="filterCards('models')">Modelos</button>
+    <button class="filter-btn" onclick="filterCards('simulation')">Simulación</button>
+    <button class="filter-btn" onclick="filterCards('ml')">Machine learning</button>
+    <button class="filter-btn" onclick="filterCards('multiscale')">Multiescala</button>
+  </div>
+</div>
+
+<div class="container">
+<div class="grid">
+
+<!-- ============ SECCIÓN 1: FUNDAMENTOS DEL DAÑO PRIMARIO ============ -->
+<div class="section-title">Fundamentos del daño primario por radiación</div>
+
+<div class="card" data-cat="damage" onclick="toggle(this)" id="c-tde">
+  <div class="card-bar" style="background:var(--coral)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--coral-light);color:var(--coral-dark)">1.1</span>
+    <span class="card-title">Energía umbral de desplazamiento (TDE)</span>
+    <span class="card-source">N</span>
+  </div>
+  <div class="card-sub">Cantidad fundamental: energía mínima para crear un defecto estable</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Definición</div>
+      <div class="detail-text">Energía mínima de retroceso para crear un defecto permanente. No es un valor único: cada dirección cristalográfica tiene su propio TDE por la anisotropía de la estructura. Para Cu, el mínimo es ~19 eV pero el promedio cristalográfico aceptado es 30 eV.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Valores típicos</div>
+      <div class="detail-text">Metales: 10-50 eV. Cerámicos: 40-100 eV. Grafeno: ~17 eV (normal al plano basal). Diamante: 30-48 eV. La naturaleza estocástica implica que incluso a 400 eV en Fe, el daño puede ser cero en algunas cascadas.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Dependencia con temperatura</div>
+      <div class="detail-text">Generalmente disminuye con T por reducción de rigidez elástica y contribuciones de vibración térmica. Excepción: TiO2 rutilo muestra aumento con T por recombinación correlacionada.</div>
+    </div>
+    <div class="tag-row">
+      <span class="tag" style="background:var(--blue-light);color:var(--blue-dark)">DFT-MD</span>
+      <span class="tag" style="background:var(--coral-light);color:var(--coral-dark)">TEM</span>
+      <span class="tag" style="background:var(--purple-light);color:var(--purple-dark)">Si, Ge, Fe, C</span>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-nrt')">→ Modelo NRT-dpa</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-cascade')">→ Cascadas</button>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="damage" onclick="toggle(this)" id="c-cascade">
+  <div class="card-bar" style="background:var(--coral)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--coral-light);color:var(--coral-dark)">1.2</span>
+    <span class="card-title">Cascadas de desplazamiento</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Colisiones balísticas → heat spike → recristalización → defectos sobrevivientes</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Escalas temporales</div>
+      <div class="detail-text"><b>Fase balística:</b> ~0.1-1 ps, colisiones atómicas y producción masiva de átomos desplazados. <b>Heat spike:</b> ~1-10 ps, zona densa de colisiones many-body a ~10,000 K. <b>Recristalización:</b> ~10-100 ps, la mayoría de defectos se recombinan. <b>Evolución térmica:</b> ns a años, migración activada térmicamente.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Recombinación atermal</div>
+      <div class="detail-text">Proceso clave: solo ~20-30% de los defectos NRT sobreviven. La recristalización del heat spike regenera cristal casi perfecto. Los intersticiales se forman en la periferia, las vacancias se agrupan en el centro. Este proceso ocurre incluso a 0 K.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Fracción sobreviviente (ξ)</div>
+      <div class="detail-text">En Fe: ξ ≈ 0.2-0.5 (saturación ~0.3 arriba de 10 keV). En metales pesados (Au, Pt, W): puede haber producción supralineal por shockwaves supersónicas interconectadas arriba de 100 keV.</div>
+    </div>
+    <div class="tag-row">
+      <span class="tag" style="background:var(--purple-light);color:var(--purple-dark)">MD</span>
+      <span class="tag" style="background:var(--coral-light);color:var(--coral-dark)">Resistividad criogénica</span>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-arcdpa')">→ ARC-DPA</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-mixing')">→ Mezcla atómica</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-clusters')">→ Clusters de defectos</button>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="damage" onclick="toggle(this)" id="c-clusters">
+  <div class="card-bar" style="background:var(--coral)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--coral-light);color:var(--coral-dark)">1.3</span>
+    <span class="card-title">Clusters de defectos y loops</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Formación de clusters de intersticiales y vacancias, loops de dislocación</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Distribución de tamaños</div>
+      <div class="detail-text">Sigue leyes de potencia. En W, la distribución extrapolada de MD coincide con observaciones in situ de loops en láminas de W irradiadas a temperaturas criogénicas. Para Fe, el límite superior está mayormente bajo el límite observable por TEM.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Mecanismos de formación</div>
+      <div class="detail-text">Clusters de vacancias: empujados al centro por el frente de recristalización. Clusters de intersticiales: frente de recristalización asimétrico que aísla un bolsillo líquido, o interacción de shockwaves supersónicas. Los loops de dislocación grandes afectan significativamente la evolución microestructural a largo plazo.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Relevancia para tu pipeline</div>
+      <div class="detail-text">Tu trabajo con clusters de vacancias en Ni FCC y Fe BCC está directamente conectado: los descriptores de Steinhardt (q4-q12), PTM y Voronoi que calculas son las herramientas para clasificar estos defectos de forma automatizada.</div>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-highdose')">→ Daño alta dosis</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-harden')">→ Endurecimiento</button>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="damage" onclick="toggle(this)" id="c-mixing">
+  <div class="card-bar" style="background:var(--coral)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--coral-light);color:var(--coral-dark)">1.4</span>
+    <span class="card-title">Mezcla atómica (radiation mixing)</span>
+    <span class="card-source">N</span>
+  </div>
+  <div class="card-sub">Reemplazos atómicos >> defectos producidos; tres mecanismos</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Tres mecanismos</div>
+      <div class="detail-text"><b>Implantación por retroceso:</b> colisiones Coulomb, lineal con dosis, independiente de T. <b>Mezcla balística:</b> similar a difusión, componentes fluyen por gradientes de concentración (~15 eV >> energías de ordenamiento ~1 eV). <b>Mezcla por thermal spike:</b> saltos atómicos durante la fase de heat spike, dominante en metales pesados.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Cuantificación</div>
+      <div class="detail-text">El número de átomos reemplazados puede ser >30x el NRT-dpa. En Cu experimental: ζ_BM ≈ 150 Å²/dpa. En Au: 730 Å²/dpa. La mezcla aumenta con masa atómica y disminuye con temperatura de fusión.</div>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-rpa')">→ Modelo RPA</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECCIÓN 2: MODELOS ANALÍTICOS ============ -->
+<div class="section-title">Modelos analíticos de daño</div>
+
+<div class="card" data-cat="models" onclick="toggle(this)" id="c-nrt">
+  <div class="card-bar" style="background:var(--blue)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--blue-light);color:var(--blue-dark)">2.1</span>
+    <span class="card-title">Modelo NRT-dpa (Kinchin-Pease)</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Estándar internacional desde 1975; sobreestima defectos 3-4x</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Ecuación</div>
+      <div class="equation">N_d(T_d) = 0.8·T_d / (2·E_d)  para T_d > 2E_d/0.8</div>
+      <div class="detail-text">T_d = energía de daño (nuclear), E_d = energía umbral de desplazamiento. El factor 0.8 viene de simulaciones BCA donde ~20% de sitios se rellenan por otro átomo.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Limitaciones principales</div>
+      <div class="detail-text">1) Sobreestima defectos reales por factor 3-4 en metales. 2) Subestima mezcla atómica por factor ~30. 3) No captura morfología de clusters ni distribución espacial. 4) Función escalón en umbral no es realista. Puede llevar a subestimación de ~5 años en vida útil de vasija de reactor.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Valor como estándar</div>
+      <div class="detail-text">A pesar de limitaciones, su uso universal durante 40+ años como estándar de comparación de dosis de radiación justifica retenerlo como parámetro de referencia.</div>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-arcdpa')">→ ARC-DPA</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-rpa')">→ RPA</button>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="models" onclick="toggle(this)" id="c-arcdpa">
+  <div class="card-bar" style="background:var(--blue)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--blue-light);color:var(--blue-dark)">2.2</span>
+    <span class="card-title">ARC-DPA y CRC-DPA</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Correcciones que reducen significativamente el daño efectivo predicho</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Modelo ARC-DPA</div>
+      <div class="equation">ξ_arcdpa(T_d) = [(1-c)/(2E_d/0.8)^b]·T_d^b + c</div>
+      <div class="detail-text">Función de eficiencia que multiplica al NRT-dpa. Derivada de considerar que solo intersticiales en la capa exterior (R-L a R) de la cascada sobreviven. b < 0 produce sub-linealidad a bajas energías; c es la eficiencia de saturación a altas energías.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Constantes para metales clave</div>
+      <div class="detail-text">Fe: E_d=40 eV, b=-0.568, c=0.286. Cu: E_d=33, b=-0.68, c=0.16. W: E_d=70, b=-0.56, c=0.12. Ni: E_d=39, b=-1.01, c=0.23.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Modelo CRC-DPA</div>
+      <div class="detail-text">Extensión mencionada en Reali et al. que complementa ARC-DPA. Ambas correcciones son esenciales para el modelado de endurecimiento por irradiación (barreras débiles/fuertes, superposición cuadrática y lineal).</div>
+    </div>
+    <div class="tag-row">
+      <span class="tag" style="background:var(--blue-light);color:var(--blue-dark)">Nordlund 2018</span>
+      <span class="tag" style="background:var(--purple-light);color:var(--purple-dark)">Ajustado a MD</span>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="models" onclick="toggle(this)" id="c-rpa">
+  <div class="card-bar" style="background:var(--blue)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--blue-light);color:var(--blue-dark)">2.3</span>
+    <span class="card-title">Modelo RPA (reemplazos por átomo)</span>
+    <span class="card-source">N</span>
+  </div>
+  <div class="card-sub">Cuantifica mezcla atómica real; complementa NRT-dpa</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Fundamento físico</div>
+      <div class="detail-text">En la región líquida del heat spike, todos los átomos son libres de moverse y casi seguro hacen reemplazos. N_rpa ∝ R³ ∝ T_d^(3x) donde x > 1/3, dando aumento supralineal con energía a bajas energías.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Ecuación</div>
+      <div class="equation">ξ_rpa(T_d) = [b_rpa^c/(2E_d/0.8)^c + 1] · T_d^c / (b_rpa^c + T_d^c)</div>
+      <div class="detail-text">b_rpa tiene significado físico como energía promedio de fragmentación en subcascadas. Fe: b_rpa=1018 eV, c_rpa=0.95. W: b_rpa=12332 eV, c_rpa=0.73.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECCIÓN 3: TIPOS DE MATERIALES ============ -->
+<div class="section-title">Clases de materiales bajo irradiación</div>
+
+<div class="card" data-cat="materials" onclick="toggle(this)" id="c-metals">
+  <div class="card-bar" style="background:var(--teal)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--teal-light);color:var(--teal-dark)">3.1</span>
+    <span class="card-title">Metales (FCC, BCC)</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Fe, Cu, Ni, W, Au, Pt — recombinación atermal dominante</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Comportamiento general</div>
+      <div class="detail-text">Los metales nunca se amorfizan bajo irradiación (a diferencia de semiconductores). La alta fracción de empaquetamiento lleva a fuerte tendencia a recristalizar. El nivel de defectos puntuales satura en ~0.004 átomos desplazados (Cu experimental). La producción de daño MD con distintos potenciales es consistente reproduciendo la recombinación experimental.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Aceros Fe-Cr y Fe-Cr-Mn-Ni</div>
+      <div class="detail-text">Modelado de estabilidad de fases BCC vs FCC. Influencia de vacancias e intersticiales en la segregación de Cr. Segregación inducida por radiación (RIS) es un fenómeno crítico.</div>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-tungsten')">→ Tungsteno</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-hea')">→ HEA</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-nano')">→ Nanoestructurados</button>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="materials" onclick="toggle(this)" id="c-tungsten">
+  <div class="card-bar" style="background:var(--teal)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--teal-light);color:var(--teal-dark)">3.2</span>
+    <span class="card-title">Tungsteno y aleaciones W-Re-Os</span>
+    <span class="card-source">R</span>
+  </div>
+  <div class="card-sub">Plasma-facing material; transmutación genera Re/Os bajo irradiación</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Efectos de transmutación</div>
+      <div class="detail-text">Bajo irradiación por neutrones de fusión, Re y Os segregan y decoran vacíos. Esto modifica propiedades mecánicas. Se emplean DFT + Cluster Expansion + Monte Carlo para modelar la formación de precipitados inducidos por radiación.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">SMART alloys (W-Cr-Y-Zr)</div>
+      <div class="detail-text">Diseñadas para evitar oxidación catastrófica en accidentes tipo LOCA. Modelado termodinámico muestra descomposición de fases y ordenamiento químico bajo condiciones de servicio.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Daño a alta energía</div>
+      <div class="detail-text">W tiene umbral de subcascada alto (~150-200 keV vs ~20-30 keV para Fe). Producción supralineal de defectos arriba de 100 keV por shockwaves supersónicas. E_d = 70 eV.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="materials" onclick="toggle(this)" id="c-hea">
+  <div class="card-bar" style="background:var(--teal)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--teal-light);color:var(--teal-dark)">3.3</span>
+    <span class="card-title">Aleaciones de alta entropía (HEA)</span>
+    <span class="card-source">R+N</span>
+  </div>
+  <div class="card-sub">Alta resistencia a irradiación; mecanismos aún en investigación</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Tolerancia al daño</div>
+      <div class="detail-text">Las HEA equiatómicas muestran saturación de daño a niveles más bajos que metales puros. Pequeñas variaciones composicionales (ej. V en W-Ta) modifican fuertemente la tolerancia. Modeladas con DFT + MC + potenciales ML.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Resultados MD de cascadas superpuestas</div>
+      <div class="detail-text">Simulaciones de cascadas masivamente superpuestas en aleaciones equiatómicas (Granberg et al. 2016) muestran que la heterogeneidad atómica ralentiza la acumulación de daño por reducción de movilidad de dislocaciones.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="materials" onclick="toggle(this)" id="c-semicon">
+  <div class="card-bar" style="background:var(--teal)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--teal-light);color:var(--teal-dark)">3.4</span>
+    <span class="card-title">Semiconductores, cerámicos y carbono</span>
+    <span class="card-source">N</span>
+  </div>
+  <div class="card-sub">Se amorfizan; no hay recombinación atermal como en metales</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Semiconductores (Si, Ge)</div>
+      <div class="detail-text">Estructura cristalina abierta y recristalización lenta → bolsillos amorfos directos en cascadas individuales. Producción de defectos lineal con energía (sin efecto atermal). Se amorfizan completamente a alta fluencia y baja T. Temperatura crítica de amorfización: ~300°C (Si), ~200°C (SiC).</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Cerámicos y materiales iónicos</div>
+      <div class="detail-text">E_d anión/catión: 40-100 eV. Eficiencia de producción: 20-50% del NRT. Estructura fluorita muestra buena resistencia a amorfización. El desorden químico precede la transición cristalina→amorfa.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Grafeno y materiales 2D</div>
+      <div class="detail-text">Sistema ideal para estudiar desplazamientos individuales con TEM aberration-corrected. TDE ~17 eV normal al plano basal. Monovacancias migran a T ambiente, coalescen en divacancias inmóviles. Diamante: 30-48 eV, más resistente a radiación.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="materials" onclick="toggle(this)" id="c-nano">
+  <div class="card-bar" style="background:var(--teal)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--teal-light);color:var(--teal-dark)">3.5</span>
+    <span class="card-title">Nanoestructurados y superficies</span>
+    <span class="card-source">N</span>
+  </div>
+  <div class="card-sub">Bordes de grano como sumideros de defectos; nanofoams, thin films</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Metales nanocristalinos</div>
+      <div class="detail-text">Los bordes de grano actúan como sumideros de intersticiales, dejando morfología dominada por vacancias. En Ni nc: aniquilación de intersticiales en bordes de grano + red de dislocaciones parciales. Resistencia mejorada a irradiación demostrada en TiNi nc.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Efectos de superficie</div>
+      <div class="detail-text">Cascadas cerca de superficies producen grandes clusters de vacancias (producción bias). Heat spikes que intersectan superficie → craterización por flujo viscoso. Efectos significativos hasta 5-10 nm de profundidad. W fuzz: sputtering reducido ~10x por redeposición.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Caveat</div>
+      <div class="detail-text">La estabilidad a largo plazo bajo alta dosis y alta T no está asegurada: la irradiación puede inducir crecimiento de grano (demostrado en nanoclusters icosaédricos → monocristalinos por heat spike).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECCIÓN 4: TRANSMUTACIÓN ============ -->
+<div class="section-title">Transmutación nuclear</div>
+
+<div class="card full-width" data-cat="damage materials" onclick="toggle(this)" id="c-transm">
+  <div class="card-bar" style="background:var(--pink)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--pink-light);color:var(--pink-dark)">4</span>
+    <span class="card-title">Efectos de transmutación bajo neutrones de fusión (14 MeV)</span>
+    <span class="card-source">R</span>
+  </div>
+  <div class="card-sub">Generación de He/H, nuevos elementos, activación — pueden ser tan importantes como el daño por desplazamiento</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Procesos principales</div>
+      <div class="detail-text">Los neutrones de 14 MeV causan transmutaciones nucleares: cambio de elementos, generación de He y H (favorecen hinchamiento por cavidades), producción de Re y Os en W, activación radiactiva del material. El código FISPACT-II modela la evolución isotópica.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Hallazgo clave</div>
+      <div class="detail-text">Los efectos de transmutación pueden ser tan importantes como el daño por desplazamiento atómico. Esto es crítico para fusión D-T donde no hay datos experimentales completos con neutrones de 14 MeV.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Incertidumbres</div>
+      <div class="detail-text">Propagación de incertidumbres en datos nucleares y matrices de covarianza son fundamentales para evaluación de seguridad y gestión de residuos.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECCIÓN 5: SIMULACIÓN ============ -->
+<div class="section-title">Métodos de simulación atomística</div>
+
+<div class="card" data-cat="simulation" onclick="toggle(this)" id="c-md">
+  <div class="card-bar" style="background:var(--purple)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--purple-light);color:var(--purple-dark)">5.1</span>
+    <span class="card-title">Dinámica molecular (MD)</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Herramienta principal para daño primario; limitada en tiempo y escala</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Capacidades</div>
+      <div class="detail-text">Puede describir colisiones nucleares exactamente dentro de Born-Oppenheimer con potenciales repulsivos realistas y paso temporal adaptativo. Buena concordancia con rangos iónicos, yields de sputtering, formas de cráteres y mezcla por ion beam.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Limitaciones principales</div>
+      <div class="detail-text">1) Fiabilidad del potencial interatómico (variación significativa entre potenciales para fracción en clusters). 2) Excitaciones electrónicas no incluidas en MD clásica. 3) Acoplamiento electrón-fonón y límite de baja energía del stopping electrónico no resueltos. 4) Escala temporal limitada a ~ns. 5) Escalas de longitud ~100 nm.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Stopping electrónico y e-ph coupling</div>
+      <div class="detail-text">El stopping electrónico se incluye como fuerza de fricción desde los 90s. El e-ph coupling es más complejo: el heat spike calienta el subsistema iónico, el stopping calienta el electrónico, y no están acoplados. Métodos TD-DFT empiezan a calcular stopping explícitamente.</div>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-bca')">→ BCA</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-cra')">→ CRA</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-mlpot')">→ Potenciales ML</button>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="simulation" onclick="toggle(this)" id="c-bca">
+  <div class="card-bar" style="background:var(--purple)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--purple-light);color:var(--purple-dark)">5.2</span>
+    <span class="card-title">BCA y SRIM/TRIM</span>
+    <span class="card-source">N</span>
+  </div>
+  <div class="card-sub">Aproximación de colisiones binarias; base del NRT-dpa</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Capacidades y limitaciones</div>
+      <div class="detail-text">Buena para rangos iónicos y channeling a keV-MeV. No puede predecir estructura atómica de defectos por falta de interacciones many-body. SRIM es internamente inconsistente en producción de defectos. No captura heat spikes → subestima mezcla en metales pesados. La distancia de clustering requiere calibración de MD.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="simulation" onclick="toggle(this)" id="c-cra">
+  <div class="card-bar" style="background:var(--purple)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--purple-light);color:var(--purple-dark)">5.3</span>
+    <span class="card-title">Creation Relaxation Algorithm (CRA)</span>
+    <span class="card-source">R</span>
+  </div>
+  <div class="card-sub">Inserta pares de Frenkel artificiales para alcanzar altas dosis eficientemente</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Método</div>
+      <div class="detail-text">Alternativa a simular millones de cascadas (computacionalmente inviable con DFT). Inserta pares de Frenkel artificiales y relaja el sistema. Permite alcanzar altas dosis de forma eficiente. Microestructuras comparables a MD masivas.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Limitaciones</div>
+      <div class="detail-text">Escalas de longitud limitadas (~100 nm). Necesidad de mejores potenciales interatómicos. Alto costo computacional aún en comparación con métodos de campo medio.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECCIÓN 6: MACHINE LEARNING ============ -->
+<div class="section-title">Machine learning en materiales irradiados</div>
+
+<div class="card full-width" data-cat="ml" onclick="toggle(this)" id="c-mlpot">
+  <div class="card-bar" style="background:var(--amber)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--amber-light);color:var(--amber-dark)">6</span>
+    <span class="card-title">Potenciales interatómicos basados en ML</span>
+    <span class="card-source">R</span>
+  </div>
+  <div class="card-sub">Precisión ~DFT a escalas mucho mayores; clave para HEAs y H en metales</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Aplicaciones actuales</div>
+      <div class="detail-text">Mejorar predicción de energías de enlace He-vacancia. Simular HEAs complejas multicomponente. Modelar hidrógeno en metales. Simulación realista de daño acumulado a escalas inalcanzables por DFT.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Ventajas</div>
+      <div class="detail-text">Precisión cercana a DFT pero a costo computacional de potenciales clásicos. Permiten abordar aleaciones complejas donde los potenciales EAM/MEAM no son fiables. Escalabilidad a millones de átomos.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Conexión con tu trabajo</div>
+      <div class="detail-text">Tu pipeline DGCNN + Random Forest para clasificación de defectos en point clouds es complementario: los potenciales ML generan las simulaciones, tus modelos clasifican los defectos resultantes. Los descriptores de Steinhardt y Voronoi que calculas son features típicos usados también en el entrenamiento de potenciales ML.</div>
+    </div>
+    <div class="conn-row">
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-md')">→ MD con potenciales ML</button>
+      <button class="conn" onclick="event.stopPropagation();scrollTo('c-hea')">→ HEAs complejas</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECCIÓN 7: DAÑO A ALTA DOSIS ============ -->
+<div class="section-title">Evolución a alta dosis y propiedades mecánicas</div>
+
+<div class="card" data-cat="damage models" onclick="toggle(this)" id="c-highdose">
+  <div class="card-bar" style="background:var(--coral)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--coral-light);color:var(--coral-dark)">7.1</span>
+    <span class="card-title">Daño a alta dosis y saturación</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Cascadas superpuestas, saturación de defectos, hinchamiento</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Saturación en metales</div>
+      <div class="detail-text">En Cu, el daño satura a ~0.004 átomos desplazados. En simulaciones MD de cascadas superpuestas: 0.004-0.008. A dpa nominal de 10 o 100, la concentración de defectos permanece en ~0.001-0.01. El dpa se desconecta del daño real pero sigue siendo útil como medida de dosis.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Fenómenos acumulativos</div>
+      <div class="detail-text">Las cascadas pueden: aniquilar daño previo (heat spikes), inducir climb de dislocaciones, absorber intersticiales (producción bias), alterar morfología de defectos existentes, cambiar vectores de Burgers, producir redes complejas de dislocaciones.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Hinchamiento (swelling)</div>
+      <div class="detail-text">Vacancias agglomeran en voids → hinchamiento potencialmente ilimitado. Ejemplo: W fuzz por bombardeo de He a alta dosis, crecimiento con √(fluencia).</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="damage" onclick="toggle(this)" id="c-harden">
+  <div class="card-bar" style="background:var(--coral)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--coral-light);color:var(--coral-dark)">7.2</span>
+    <span class="card-title">Endurecimiento y segregación (RIS)</span>
+    <span class="card-source">R</span>
+  </div>
+  <div class="card-sub">Endurecimiento por irradiación y segregación inducida por radiación</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Endurecimiento</div>
+      <div class="detail-text">Debe modelarse considerando: barreras débiles (loops pequeños, defectos puntuales) y fuertes (voids, precipitados grandes). Superposición correcta: cuadrática para barreras del mismo tipo, lineal para tipos diferentes.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Segregación (RIS)</div>
+      <div class="detail-text">Segregación inducida por radiación: flujos de defectos hacia sumideros arrastran solutos preferencialmente. En Fe-Cr: influencia de vacancias e intersticiales en la segregación de Cr determina estabilidad de fases.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECCIÓN 8: MULTIESCALA ============ -->
+<div class="section-title">Modelado multiescala y perspectivas</div>
+
+<div class="card full-width" data-cat="multiscale" onclick="toggle(this)" id="c-multi">
+  <div class="card-bar" style="background:var(--green)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--green-light);color:var(--green-dark)">8</span>
+    <span class="card-title">Cadena multiescala completa</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">DFT → MC → MD → KMC → Rate theory → DD → FEM → Reactor</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Cadena de métodos</div>
+      <div class="detail-text" style="font-family:monospace;font-size:0.75rem;line-height:2;">
+        DFT (nm, fs) → Potenciales ML → MD clásica (100nm, ns) → KMC (μm, ms-s) → Rate equations (mm, horas) → Discrete Dislocation Dynamics (mm, s) → FEM (m, años) → Simulación del reactor
+      </div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Desafío central</div>
+      <div class="detail-text">Integrar defectos microscópicos → evolución microestructural → propiedades mecánicas → comportamiento estructural del componente. Recientemente (Dudarev et al. 2018) se desarrolló un formalismo para transferir directamente propiedades mecánicas a nivel atómico a FEM.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Estado actual</div>
+      <div class="detail-text">No hay fenómeno físico que en principio no pueda ser abordado con modelado multiescala. Big data y AI pueden describir eficientemente procesos que no admiten ecuaciones analíticas. Pero la validación experimental sigue siendo la brecha más grande.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card full-width" data-cat="multiscale" onclick="toggle(this)" id="c-gaps">
+  <div class="card-bar" style="background:var(--red)"></div>
+  <div class="card-head">
+    <span class="card-num" style="background:var(--red-light);color:var(--red-dark)">9</span>
+    <span class="card-title">Brechas principales y direcciones futuras</span>
+    <span class="card-source">N+R</span>
+  </div>
+  <div class="card-sub">Validación experimental, escalas largas, incertidumbre en datos nucleares</div>
+  <div class="card-detail">
+    <div class="detail-block">
+      <div class="detail-label">Brechas científicas</div>
+      <div class="detail-text">1) Fracción de daño en clusters no predecible confiablemente — ni por MD ni medible fácilmente. 2) Acoplamiento e-ph y límite de baja energía del stopping electrónico no resueltos. 3) Datos nucleares con incertidumbres significativas para fusión. 4) No hay fuente de neutrones de 14 MeV para validación. 5) Distribución espacial de defectos en cascadas no capturada por modelos dpa.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Direcciones futuras</div>
+      <div class="detail-text">1) Potenciales ML robustos para aleaciones complejas. 2) Integración transmutación + daño + evolución química. 3) Validación experimental en condiciones representativas de fusión (IFMIF/DONES). 4) Integración multiescala realista con HPC. 5) TD-DFT para stopping electrónico. 6) TEM aberration-corrected para clusters pequeños. 7) Extensión de arc-dpa/rpa a distribuciones de clusters.</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Relevancia para DEMO</div>
+      <div class="detail-text">El modelado teórico es esencial para diseñar materiales antes de reactores comerciales, reducir costos experimentales y acelerar DEMO. La comunidad avanza fuertemente en atomística avanzada, aleaciones resistentes, ML y multiescala, pero las brechas de validación persisten.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- grid -->
+</div><!-- container -->
+
+<script>
+function toggle(el) {
+  const wasExpanded = el.classList.contains('expanded');
+  document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!wasExpanded) el.classList.add('expanded');
+}
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
+  el.classList.add('expanded');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.style.boxShadow = '0 0 0 2px var(--text3)';
+  setTimeout(() => el.style.boxShadow = '', 2000);
+}
+
+function filterCards(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.card').forEach(c => {
+    if (cat === 'all') { c.classList.remove('hidden'); return; }
+    const cats = c.getAttribute('data-cat') || '';
+    c.classList.toggle('hidden', !cats.includes(cat));
+  });
+  document.querySelectorAll('.section-title').forEach(s => {
+    if (cat === 'all') { s.style.display = ''; return; }
+    const next = s.nextElementSibling;
+    if (next && next.classList.contains('hidden')) {
+      let allHidden = true;
+      let sib = next;
+      while (sib && !sib.classList.contains('section-title')) {
+        if (!sib.classList.contains('hidden')) { allHidden = false; break; }
+        sib = sib.nextElementSibling;
+      }
+      s.style.display = allHidden ? 'none' : '';
+    } else { s.style.display = ''; }
+  });
+}
+</script>
+</body>
+</html>
