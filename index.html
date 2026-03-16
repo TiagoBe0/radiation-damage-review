@@ -122,6 +122,9 @@ tr:last-child td { border-bottom: none; }
   <div class="source-row">
     <span class="src">R — Reali et al., J. Nucl. Mater. 2026</span>
     <span class="src">N — Nordlund et al., J. Nucl. Mater. 2018</span>
+    <span class="src">J — Jiang et al., npj Comput. Mater. 2026</span>
+    <span class="src">L — Liu et al., arXiv 2025</span>
+    <span class="src">Lin — Lin et al., Materials 2026</span>
   </div>
 </div>
 
@@ -134,6 +137,7 @@ tr:last-child td { border-bottom: none; }
   <button class="nav-btn" onclick="showTab('synthesis')">6. Síntesis</button>
   <button class="nav-btn" onclick="showTab('assumptions')">7. Supuestos</button>
   <button class="nav-btn" onclick="showTab('map')">8. Mapa</button>
+  <button class="nav-btn" onclick="showTab('explain')">Explicación final</button>
 </div>
 
 <!-- ======================= TAB 1: INTAKE ======================= -->
@@ -175,6 +179,61 @@ tr:last-child td { border-bottom: none; }
     <div class="db">
       <div class="db-label">Aporte específico</div>
       <div class="db-text">Mapea brechas entre estado del arte y necesidades de reactores comerciales. Enfatiza que transmutación puede ser tan importante como daño por desplazamiento. Identifica potenciales ML como herramienta transformadora.</div>
+    </div>
+  </div>
+</div>
+
+<h3 style="font-size:0.85rem;font-weight:600;margin:2rem 0 1rem;color:var(--text2);">Papers adicionales (2025-2026)</h3>
+
+<div class="card" onclick="tog(this)">
+  <div class="card-bar" style="background:var(--amber)"></div>
+  <div class="card-head">
+    <span class="card-id" style="background:var(--amber-light);color:var(--amber-dark)">J-2026</span>
+    <span class="card-title">Jiang et al. — "Scaling reliable IAPs via pretrained atomic models"</span>
+  </div>
+  <div class="card-brief"><b>Claim central:</b> Un modelo atómico grande pretrained (DPA2) fine-tuned solo con datos de la aleación quinaria Ta-Nb-W-Mo-V supera a los MLIAPs convencionales y se transfiere a subsistemas sin datos adicionales — reproduciendo cascadas y propiedades mecánicas.</div>
+  <div class="card-body">
+    <div class="db">
+      <div class="db-label">Aporte específico</div>
+      <div class="db-text">Primera aplicación de pretraining multi-task a aleaciones nucleares estructurales. DPA2-5E (trained on quinary only) reproduce FPs idénticos a DPA2-All (trained on 31 subsystems) para cascadas de 2-10 keV. Se extiende a FCC+L1₂ microestructuras y ambientes corrosivos Pb-Bi+O. Estrategia "one-for-many": un modelo, múltiples composiciones.</div>
+    </div>
+    <div class="db">
+      <div class="db-label">Limitación reconocida</div>
+      <div class="db-text">DPA2-5E subestima sistemáticamente yield strength, especialmente en subsistemas simples. Causa: los datasets de pretraining están dominados por configuraciones de equilibrio, lo que sesga la PES hacia energías/fuerzas bajas bajo condiciones de no-equilibrio.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" onclick="tog(this)">
+  <div class="card-bar" style="background:var(--teal)"></div>
+  <div class="card-head">
+    <span class="card-id" style="background:var(--teal-light);color:var(--teal-dark)">L-2025</span>
+    <span class="card-title">Liu et al. — "CSRO impact on radiation damage in MoNbTaVW"</span>
+  </div>
+  <div class="card-brief"><b>Claim central:</b> El orden químico de corto alcance (CSRO) en MoNbTaVW mejora la resistencia a radiación facilitando recombinación de defectos, pero se degrada rápidamente bajo irradiación acumulativa (WC < 0.3 a 0.03 dpa).</div>
+  <div class="card-body">
+    <div class="db">
+      <div class="db-label">Aporte específico</div>
+      <div class="db-text">Hybrid MC/MD con NEP en 6.75M átomos. CSRO (pares Mo-Ta, Mo-Nb tipo B2) reduce E_m de intersticiales (1.33→1.08 eV) y aumenta E_m de vacancias (1.10→1.54 eV), mejorando recombinación en fase de recuperación. Pero 1000 cascadas superpuestas de 10 keV destruyen el CSRO. V es el intersticial dominante.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" onclick="tog(this)">
+  <div class="card-bar" style="background:var(--purple)"></div>
+  <div class="card-head">
+    <span class="card-id" style="background:var(--purple-light);color:var(--purple-dark)">Lin-2026</span>
+    <span class="card-title">Lin et al. — "Defect evolution in IN617 under successive cascades"</span>
+  </div>
+  <div class="card-brief"><b>Claim central:</b> En IN617 (Ni-Cr-Co FCC), el endurecimiento por irradiación está gobernado por el clustering agresivo de intersticiales (88.4% en clusters), no por formación de voids de vacancias (68.8% aisladas).</div>
+  <div class="card-body">
+    <div class="db">
+      <div class="db-label">Aporte específico</div>
+      <div class="db-text">75 cascadas sucesivas de 5 keV a 300K con EAM+ZBL. FPs crecen casi-linealmente. Densidad de dislocaciones satura a ~4.5×10⁻⁴ Å⁻² después de ~60 cascadas. Red dominada por Shockley partials 1/6⟨112⟩ con reorganización continua. Cr y Co se atrapan en clusters intersticiales (solute pinning).</div>
+    </div>
+    <div class="db">
+      <div class="db-label">Limitaciones</div>
+      <div class="db-text">Potencial EAM clásico (no ML). Sin electronic stopping explícito. Solo 300K (IN617 opera a >900K). Modelo simplificado Ni-Cr-Co sin Mo, Al, Ti. Monocristal sin bordes de grano.</div>
     </div>
   </div>
 </div>
@@ -224,42 +283,61 @@ tr:last-child td { border-bottom: none; }
 </div>
 </div>
 
+<!-- ======================= TAB 1b: NEW PAPERS ======================= -->
+<!-- These are injected into the intake section -->
+
+</div>
+
+<!-- Inject new papers into intake via JS at bottom -->
+
 <!-- ======================= TAB 2: CONTRADICCIONES ======================= -->
 <div class="section" id="contra">
 <h2 class="sec-head">Contradicciones identificadas</h2>
-<p class="sec-desc">Puntos donde las dos fuentes divergen o se tensan entre sí.</p>
+<p class="sec-desc">Puntos donde las fuentes divergen o se tensan entre sí. Actualizado con 5 papers.</p>
 
 <div class="tbl-wrap">
 <table>
 <tr>
-  <th style="width:22%">Punto</th>
-  <th style="width:25%">Nordlund 2018</th>
-  <th style="width:25%">Reali 2026</th>
-  <th style="width:28%">Razón de divergencia</th>
+  <th style="width:18%">Punto</th>
+  <th style="width:22%">Posición A</th>
+  <th style="width:22%">Posición B</th>
+  <th style="width:18%">Papers</th>
+  <th style="width:20%">Razón</th>
 </tr>
 <tr>
   <td><b>Saturación de ξ a alta energía</b></td>
-  <td>ARC-DPA asume que la eficiencia de daño satura a una constante c a altas energías. Reconoce excepción en W/Au/Pt (supralineal >100 keV).</td>
-  <td>Describe producción supralineal como fenómeno importante para materiales de fusión, no como excepción.</td>
-  <td>N escribió en 2018 cuando los datos >100 keV eran escasos. R en 2026 tiene 8 años más de simulaciones de alta energía con potenciales ML que refuerzan el caso supralineal para W.</td>
+  <td>ARC-DPA asume saturación a constante c.</td>
+  <td>Producción supralineal en W/Au/Pt >100 keV es fenómeno importante, no excepción.</td>
+  <td>N vs R</td>
+  <td>8 años más de datos de alta energía con potenciales ML en 2026.</td>
 </tr>
 <tr>
-  <td><b>Importancia relativa de transmutación vs desplazamiento</b></td>
-  <td>Excluye explícitamente transmutación de su scope. Se enfoca exclusivamente en daño por desplazamiento atómico.</td>
-  <td>Afirma que "transmutación puede ser tan importante como el daño por desplazamiento" y lo trata como hallazgo central.</td>
-  <td>Scope distinto: N revisa daño primario clásico. R aborda fusión donde neutrones de 14 MeV producen transmutaciones masivas (He, H, Re, Os). No es contradicción sino complementación con tensión.</td>
+  <td><b>¿Los potenciales ML necesitan datos de subsistemas?</b></td>
+  <td>Los potenciales ML convencionales requieren datasets exhaustivos de todos los subsistemas (binarios, ternarios, etc.).</td>
+  <td>Con pretraining multi-task (DPA2), basta entrenar solo con la aleación quinaria y se transfiere a subsistemas con precisión comparable.</td>
+  <td>R vs J</td>
+  <td>Jiang demuestra que el LAM pretrained DPA2-5E reproduce cascadas en Ta-Nb-W-Mo y Ta-W sin haber visto esos datos. Esto desafía el paradigma "data-hungry" de MLIAPs.</td>
 </tr>
 <tr>
-  <td><b>Rol de potenciales ML</b></td>
-  <td>Menciona DFT como estándar de referencia y AI/big data solo como perspectiva futura. No discute potenciales ML para cascadas.</td>
-  <td>Los potenciales ML son una "sección clave" y herramienta transformadora ya operativa para HEAs, He-vacancia, H en metales.</td>
-  <td>Evolución temporal: en 2018, los potenciales ML para daño por radiación estaban en fase temprana. Para 2026, son herramienta establecida (ACE, MACE, etc.).</td>
+  <td><b>Efecto del CSRO en resistencia a radiación</b></td>
+  <td>CSRO aumenta energías de migración de intersticiales y vacancias, suprimiendo difusión y agregación (Liu et al. en FCC MPEAs).</td>
+  <td>CSRO en BCC MoNbTaVW <i>facilita</i> difusión de intersticiales y <i>suprime</i> vacancias, mejorando recombinación. Pero el CSRO se degrada rápidamente a solo 0.03 dpa.</td>
+  <td>L vs literatura previa</td>
+  <td>Liu et al. revelan que el mecanismo en BCC RHEAs es opuesto al reportado en FCC: el CSRO acelera intersticiales (V domina) mientras frena vacancias. El hallazgo de degradación rápida del CSRO cuestiona su utilidad práctica.</td>
 </tr>
 <tr>
-  <td><b>Eficiencia de producción en cerámicos</b></td>
-  <td>Reporta 20-50% del NRT para MgO y Al₂O₃, pero también cita estudios con ~100% en Al₂O₃ y ZnO. Dice "se necesita más trabajo para resolver la discrepancia."</td>
-  <td>Menciona cerámicos de litio para breeding de tritio pero no aborda la discrepancia en eficiencia de producción.</td>
-  <td>R no resuelve la tensión que N identifica. La discrepancia en cerámicos sigue abierta en 2026, probablemente porque el foco de la comunidad de fusión está en metales.</td>
+  <td><b>Asimetría intersticiales vs vacancias en cascadas superpuestas</b></td>
+  <td>Nordlund: clusters de vacancias se forman en el centro de cascadas; intersticiales en la periferia. Ambos son importantes.</td>
+  <td>Lin (IN617): asimetría dramática — 88.4% de intersticiales en clusters vs 68.8% de vacancias aisladas después de 75 cascadas. Endurecimiento dominado por intersticiales.</td>
+  <td>N vs Lin</td>
+  <td>Lin trabaja en FCC Ni-Cr-Co a 300K donde movilidad de vacancias es muy baja. En BCC o a alta T, la dinámica sería distinta. La asimetría es real pero dependiente de T y estructura cristalina.</td>
+</tr>
+<tr>
+  <td><b>Transmutación vs desplazamiento</b></td>
+  <td>N excluye transmutación. Se enfoca en daño por desplazamiento.</td>
+  <td>R: transmutación puede ser tan importante como desplazamiento en fusión.</td>
+  <td>N vs R</td>
+  <td>Scope distinto: fisión vs fusión.</td>
 </tr>
 </table>
 </div>
@@ -427,11 +505,49 @@ tr:last-child td { border-bottom: none; }
   <div class="card-body">
     <div class="db">
       <div class="db-label">Más cerca de resolverlo</div>
-      <div class="db-text">Reali reporta potenciales ML para HEAs y He-vacancia, pero no para cascadas completas. Nordlund ni siquiera las menciona (2018). El potencial repulsivo a corta distancia (ZBL) se pega típicamente ad hoc a los ML.</div>
+      <div class="db-text"><b>Jiang et al. 2026 dan una respuesta parcial definitiva:</b> DPA2-5E (pretrained LAM fine-tuned solo con datos quinarios) reproduce cascadas de 2-10 keV en Ta-Nb-W-Mo-V y subsistemas con fidelidad estadística idéntica a DPA2-All. Esto demuestra que el pretraining multi-task resuelve el problema de datos para cascadas de baja-media energía. Sin embargo, cascadas >50 keV PKA no han sido testeadas con este framework.</div>
     </div>
     <div class="db">
-      <div class="db-label">Qué se necesita</div>
-      <div class="db-text">Benchmark sistemático: cascadas con potenciales ML vs DFT-MD (ya factible para PKAs <5 keV) y vs potenciales clásicos calibrados. Métricas: fracción sobreviviente, distribución de clusters, mixing. Esto es probablemente un paper de alto impacto esperando ser hecho.</div>
+      <div class="db-label">Qué falta</div>
+      <div class="db-text">Extensión a energías PKA >50 keV donde shockwaves supersónicas dominan (relevante para fusión). Benchmark contra DFT-MD (factible para <5 keV). Validación del potencial repulsivo ZBL pegado ad hoc a cortas distancias. Liu et al. usan NEP para MoNbTaVW con CSRO a 10-50 keV, complementando el rango de Jiang.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" onclick="tog(this)">
+  <div class="card-bar" style="background:var(--red)"></div>
+  <div class="card-head">
+    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G6</span>
+    <span class="card-title">¿Es el CSRO estable bajo irradiación, o es una mejora transitoria?</span>
+  </div>
+  <div class="card-brief"><b>Existe porque:</b> Liu et al. demuestran que el CSRO mejora la resistencia a radiación pero se degrada a solo 0.03 dpa.</div>
+  <div class="card-body">
+    <div class="db">
+      <div class="db-label">El hallazgo clave</div>
+      <div class="db-text">En MoNbTaVW BCC, el CSRO (pares Mo-Ta y Mo-Nb tipo B2) facilita la difusión de intersticiales (E_m baja de 1.33 a 1.08 eV) y suprime la de vacancias (E_m sube de 1.10 a 1.54 eV). Este desbalance aumenta la recombinación de FPs durante la fase de recuperación. Pero 1000 cascadas de 10 keV (≈0.03 dpa) degradan los parámetros Warren-Cowley por debajo de 0.3.</div>
+    </div>
+    <div class="db">
+      <div class="db-label">Implicación</div>
+      <div class="db-text">Si el CSRO no sobrevive más allá de dosis muy bajas, su beneficio para tolerancia a radiación es transitorio. Posibles soluciones: bordes de grano o interfaces de fase que re-estabilicen el orden local. Esto conecta directamente con el trabajo de nanoestructurados de Nordlund y la estrategia de diseño composicional de Reali.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" onclick="tog(this)">
+  <div class="card-bar" style="background:var(--red)"></div>
+  <div class="card-head">
+    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G7</span>
+    <span class="card-title">¿Cómo se acoplan el clustering de intersticiales, la formación de dislocaciones y el atrapamiento de solutos en aleaciones FCC complejas?</span>
+  </div>
+  <div class="card-brief"><b>Existe porque:</b> Lin et al. muestran la cadena completa pero solo con potenciales EAM clásicos.</div>
+  <div class="card-body">
+    <div class="db">
+      <div class="db-label">Lo que muestra Lin</div>
+      <div class="db-text">En IN617 (Ni-Cr-Co FCC), 75 cascadas sucesivas revelan: acumulación casi-lineal de FPs, asimetría dramática intersticiales/vacancias, clusters de intersticiales con Cr/Co atrapados, densidad de dislocaciones que satura a ~4.5×10⁻⁴ Å⁻², reorganización continua de la red de dislocaciones parciales (Shockley dominante). Todo a 300K con EAM+ZBL.</div>
+    </div>
+    <div class="db">
+      <div class="db-label">Qué falta</div>
+      <div class="db-text">Repetir con potenciales ML (como el framework DPA2 de Jiang) para verificar la cuantificación. Extender a T de servicio (>900K para HP-MSR) donde la movilidad de vacancias cambia radicalmente. Incluir los elementos menores de IN617 (Mo, Al, Ti) que afectan precipitación y segregación.</div>
     </div>
   </div>
 </div>
@@ -472,7 +588,19 @@ tr:last-child td { border-bottom: none; }
   <td><b>Potenciales ML</b></td>
   <td>No discutido (2018).</td>
   <td>"Sección clave." Para HEAs, He-vac, H en metales.</td>
-  <td style="color:var(--accent-dark)"><b>Emergente — transformador</b></td>
+  <td style="color:var(--accent-dark)"><b>Emergente — transformador. Jiang: DPA2 pretrained; Liu: NEP para CSRO</b></td>
+</tr>
+<tr>
+  <td><b>Hybrid MC/MD</b></td>
+  <td>No discutido.</td>
+  <td>Mencionado para evolución química.</td>
+  <td style="color:var(--green-dark)"><b>Creciente — Liu usa MC/MD para CSRO en 6.75M átomos</b></td>
+</tr>
+<tr>
+  <td><b>Cascadas superpuestas MD</b></td>
+  <td>Discutido como frontera (sec. 6.4). Dose rates irrealistas.</td>
+  <td>CRA como alternativa eficiente.</td>
+  <td style="color:var(--green-dark)"><b>Activo — Lin: 75 cascadas en IN617; Liu: 1000 cascadas en MoNbTaVW</b></td>
 </tr>
 <tr>
   <td><b>KMC / OKMC</b></td>
@@ -525,7 +653,7 @@ tr:last-child td { border-bottom: none; }
 
 <p style="margin-bottom:1rem;"><b>Lo probado más allá de duda razonable:</b> (1) NRT-dpa sobreestima defectos sobrevivientes por factor ~3 en cascadas energéticas en metales. (2) La mezcla atómica es un orden de magnitud mayor que lo predicho por NRT. (3) Los metales puros nunca se amorfizan bajo irradiación, a diferencia de semiconductores. (4) Los heat spikes son sistemas termodinámicos locales reales (~10,000 K, ~10 ps). (5) Los bordes de grano y interfaces actúan como sumideros efectivos de defectos.</p>
 
-<p><b>La pregunta más importante sin responder:</b> ¿Cómo se comportan los materiales candidatos para fusión (W, RAFM steels, HEAs) bajo irradiación simultánea de neutrones de 14 MeV + transmutación + temperatura de servicio (~300-1000°C) durante décadas? No existe fuente de neutrones de fusión para medir esto, los modelos multiescala no están validados end-to-end, y los potenciales ML no han sido probados para cascadas de alta energía. Toda la ingeniería de DEMO depende de responder esta pregunta mediante modelado — que es exactamente el argumento central de Reali et al.</p>
+<p><b>La pregunta más importante sin responder:</b> ¿Cómo se comportan los materiales candidatos para fusión (W, RAFM steels, HEAs) bajo irradiación simultánea de neutrones de 14 MeV + transmutación + temperatura de servicio (~300-1000°C) durante décadas? No existe fuente de neutrones de fusión para medir esto. Los avances recientes son alentadores — Jiang et al. demuestran que un solo modelo DPA2 pretrained puede simular cascadas en aleaciones quinarias y sus subsistemas sin datos adicionales, Liu et al. revelan que el orden químico de corto alcance mejora la resistencia a radiación pero se degrada rápidamente, y Lin et al. mapean la cadena completa defectos→dislocaciones en una superaleación industrial. Pero el loop completo modelado→validación→predicción para condiciones de reactor real sigue abierto.</p>
 </div>
 </div>
 
@@ -631,8 +759,8 @@ tr:last-child td { border-bottom: none; }
 <div class="o-section">
   <span class="o-label" style="background:var(--amber-light);color:var(--amber-dark)">Zonas contestadas</span>
   <ul class="o-list">
-    <li><b>Stopping electrónico a baja energía y e-ph coupling:</b> Afecta producción de defectos ~20-30%. Nordlund: "crucial para capacidad predictiva." TD-DFT puede resolver esto en ~5 años.</li>
-    <li><b>Resistencia a radiación de HEAs — mecanismo vs. cuantificación:</b> El mecanismo cualitativo (heterogeneidad reduce difusión) está establecido. La predicción cuantitativa no: pequeñas variaciones composicionales dan grandes diferencias.</li>
+    <li><b>Resistencia a radiación de HEAs — mecanismo vs. cuantificación:</b> El mecanismo cualitativo (heterogeneidad reduce difusión) está establecido. La predicción cuantitativa no: pequeñas variaciones composicionales dan grandes diferencias. Liu et al. muestran que el CSRO mejora resistencia en BCC RHEAs pero se degrada a 0.03 dpa.</li>
+    <li><b>Stopping electrónico a baja energía y e-ph coupling:</b> Afecta producción de defectos ~20-30%. TD-DFT puede resolver esto en ~5 años.</li>
     <li><b>Transmutación como co-driver de daño:</b> Reali dice "tan importante como desplazamiento." Nordlund lo excluye. La interacción acoplada no está modelada.</li>
   </ul>
 </div>
@@ -640,25 +768,59 @@ tr:last-child td { border-bottom: none; }
 <div class="o-section">
   <span class="o-label" style="background:var(--red-light);color:var(--red-dark)">Preguntas frontera</span>
   <ul class="o-list">
-    <li><b>¿Son los potenciales ML fiables para cascadas de alta energía?</b> — No hay benchmark sistemático. Gap que podría cerrarse con recursos computacionales existentes.</li>
-    <li><b>¿Se puede cerrar el loop multiescala MD→KMC→DD→FEM→ensayo mecánico para un material real?</b> — Dudarev 2018 propone el formalismo; nadie lo ha ejecutado end-to-end.</li>
+    <li><b>¿Puede el pretraining multi-task (DPA2) escalar a cascadas de alta energía (>50 keV) en aleaciones complejas?</b> — Jiang demuestra viabilidad a 2-10 keV. El salto a energías de fusión es el test definitivo.</li>
+    <li><b>¿Se puede estabilizar el CSRO bajo irradiación para mantener su beneficio?</b> — Liu demuestra que 0.03 dpa lo destruye. ¿Bordes de grano o interfaces de fase pueden re-estabilizarlo?</li>
+    <li><b>¿Se puede cerrar el loop multiescala MD→KMC→DD→FEM→ensayo mecánico para un material real?</b> — Lin da el primer paso conectando cascadas→dislocaciones en IN617.</li>
   </ul>
 </div>
 
 <div class="o-section">
-  <span class="o-label" style="background:var(--blue-light);color:var(--blue-dark)">Lectura esencial para un newcomer</span>
+  <span class="o-label" style="background:var(--blue-light);color:var(--blue-dark)">Lectura esencial — 5 papers en orden</span>
   <ul class="o-list">
-    <li><b>Nordlund et al. 2018</b> — Leer primero. Es la base: entiende el daño primario, por qué NRT falla, cómo ARC-DPA/RPA lo corrigen, y todas las limitaciones de MD. Sin esto, nada de lo que sigue tiene contexto.</li>
-    <li><b>Stoller 2012</b> (Chapter 1.11 en Comprehensive Nuclear Materials) — El capítulo de referencia estándar que precede a Nordlund. Más pedagógico, menos derivaciones nuevas.</li>
-    <li><b>Reali et al. 2026</b> — Leer después de Nordlund. Mapea el estado del arte para fusión específicamente, incluyendo todo lo nuevo (potenciales ML, HEAs, transmutación, SMART alloys) que Nordlund no cubre.</li>
+    <li><b>1. Nordlund et al. 2018</b> — Leer primero. La base: daño primario, por qué NRT falla, ARC-DPA/RPA, limitaciones de MD.</li>
+    <li><b>2. Stoller 2012</b> (Chapter 1.11, Comprehensive Nuclear Materials) — Más pedagógico, menos derivaciones nuevas.</li>
+    <li><b>3. Reali et al. 2026</b> — El estado del arte para fusión: potenciales ML, HEAs, transmutación, SMART alloys, cadena multiescala.</li>
+    <li><b>4. Jiang et al. 2026</b> — Demostración práctica de que pretraining multi-task resuelve el cuello de botella de datos para aleaciones complejas. Cascadas + mecánica con un solo modelo.</li>
+    <li><b>5. Liu et al. 2025</b> — El efecto del CSRO en BCC RHEAs: mecanismo de mejora Y su limitación fundamental (degradación bajo dosis). Complementar con Lin et al. para FCC.</li>
   </ul>
-  <p class="o-note">Después de estos tres: Sand et al. 2017 (distribución de clusters en W) y Granberg et al. 2016 (HEAs) para los dos debates activos principales.</p>
+  <p class="o-note">Después: Sand et al. 2017 (distribución de clusters en W) y Granberg et al. 2016 (HEAs cascadas superpuestas) para los debates activos.</p>
 </div>
 
 </div>
 
 <div class="print-hint">
   Imprime esta pestaña con Ctrl+P → selecciona solo esta página. Pin it above your desk.
+</div>
+</div>
+
+<!-- ======================= FINAL: EXPLICACIÓN ======================= -->
+<div class="section" id="explain">
+<h2 class="sec-head">Para una persona inteligente, no experta, en 5 minutos</h2>
+<p class="sec-desc">Sin jerga. Sin rodeos. Sin aclaraciones académicas innecesarias.</p>
+
+<div style="font-size:0.95rem;color:var(--text);line-height:2;max-width:680px;">
+
+<div class="db" style="margin-bottom:2rem;">
+  <div class="db-label" style="font-size:0.7rem;letter-spacing:0.15em;">Lo que este campo ha demostrado — en una oración</div>
+  <div style="font-family:var(--serif);font-size:1.15rem;line-height:1.5;margin-top:8px;">
+    Cuando una partícula de alta energía golpea un material sólido, la mayor parte del daño se repara solo en las primeras billonésimas de segundo — y ahora sabemos predecir cuánto daño sobrevive, cuántos átomos cambian de lugar, y cómo la composición química de una aleación puede hacer que ese material resista mejor o peor.
+  </div>
+</div>
+
+<div class="db" style="margin-bottom:2rem;">
+  <div class="db-label" style="font-size:0.7rem;letter-spacing:0.15em;">Lo que todavía no sabe — con honestidad</div>
+  <div style="font-size:0.9rem;color:var(--text2);line-height:1.85;margin-top:8px;">
+    Nadie ha visto qué pasa cuando un material real recibe décadas de bombardeo con los neutrones específicos de un reactor de fusión, porque esa fuente de neutrones no existe todavía. Todo lo que tenemos son simulaciones en computadora que cubren desde la escala de átomos individuales hasta la de componentes ingenieriles, pero nunca se ha verificado la cadena completa de principio a fin contra un experimento real. Además, las herramientas de inteligencia artificial que ahora aceleran estas simulaciones funcionan bien para las condiciones en las que fueron entrenadas, pero nadie ha comprobado que sigan siendo confiables en las condiciones más extremas. Y un truco prometedor — organizar los átomos de una aleación en un patrón local especial que mejora su resistencia — se destruye con una dosis de radiación irrisoriamente baja.
+  </div>
+</div>
+
+<div class="db">
+  <div class="db-label" style="font-size:0.7rem;letter-spacing:0.15em;">La única implicación que importa</div>
+  <div style="font-size:0.9rem;color:var(--text2);line-height:1.85;margin-top:8px;">
+    Los reactores de fusión — que prometen energía prácticamente ilimitada y limpia — no se pueden construir hasta que sepamos que sus paredes internas van a sobrevivir. Y no podemos probar esas paredes porque el reactor no existe. Así que toda la apuesta está en que las simulaciones computacionales sean lo suficientemente buenas para diseñar el material correcto antes de construir la máquina. Este campo está en una carrera contra el reloj para hacer que esas simulaciones sean confiables. Los últimos 3 años muestran avances reales: modelos de IA que necesitan muchos menos datos, simulaciones de millones de átomos que antes eran imposibles, y un entendimiento cada vez más fino de cómo la química a escala atómica determina si un material se endurece, se hincha o se fragmenta. Pero la validación final sigue pendiente.
+  </div>
+</div>
+
 </div>
 </div>
 
