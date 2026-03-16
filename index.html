@@ -3,842 +3,953 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Knowledge Map — Radiation Damage in Materials</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Mapa de Conocimiento — Daño por Radiación en Materiales Nucleares</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #FAF9F6; --bg2: #F0EFEB; --bg3: #E5E4E0;
-  --text: #1C1C1A; --text2: #4A4A46; --text3: #8A8A84;
-  --border: rgba(28,28,26,0.08);
-  --accent: #B44D2D; --accent-light: #F5EAE5; --accent-dark: #8A3520;
-  --blue: #2D5FB4; --blue-light: #E5EDF5; --blue-dark: #1E3F78;
-  --green: #2D7A4F; --green-light: #E5F2EB; --green-dark: #1B5234;
-  --amber: #A67B28; --amber-light: #F5F0E0; --amber-dark: #7A5A1A;
-  --purple: #6B4DAA; --purple-light: #EEEBF5; --purple-dark: #4A3478;
-  --red: #B43D3D; --red-light: #F5E5E5; --red-dark: #7A2525;
-  --teal: #2D8B7A; --teal-light: #E5F3F0; --teal-dark: #1B5A4F;
-  --serif: 'DM Serif Display', Georgia, serif;
-  --sans: 'DM Sans', -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --bg-deep: #0B0E14;
+  --bg-card: #12161E;
+  --bg-card-hover: #181D28;
+  --bg-surface: #1A1F2B;
+  --border-dim: rgba(255,255,255,0.06);
+  --border-med: rgba(255,255,255,0.1);
+  --border-bright: rgba(255,255,255,0.18);
+  --text-primary: #E8E6E1;
+  --text-secondary: #9B9A95;
+  --text-tertiary: #6B6A66;
+  --teal-50: #0D3D35; --teal-100: #115C4E; --teal-400: #1D9E75; --teal-500: #22B885; --teal-glow: rgba(29,158,117,0.12);
+  --purple-50: #1E1A3A; --purple-100: #2D2660; --purple-400: #7F77DD; --purple-500: #9A93E8; --purple-glow: rgba(127,119,221,0.12);
+  --coral-50: #2E1610; --coral-100: #4A1B0C; --coral-400: #D85A30; --coral-500: #E8713F; --coral-glow: rgba(216,90,48,0.12);
+  --amber-50: #2A1F08; --amber-100: #3D2E0A; --amber-400: #EF9F27; --amber-500: #F5B340; --amber-glow: rgba(239,159,39,0.12);
+  --red-50: #2A1212; --red-100: #3D1818; --red-400: #E24B4A; --red-500: #E8625F; --red-glow: rgba(226,75,74,0.12);
+  --blue-50: #0E1A2E; --blue-100: #122848; --blue-400: #378ADD; --blue-500: #4D9CE8; --blue-glow: rgba(55,138,221,0.12);
+  --green-50: #121E08; --green-100: #1B2E0D; --green-400: #639922; --green-500: #78B030; --green-glow: rgba(99,153,34,0.12);
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141413; --bg2: #1E1E1C; --bg3: #2A2A27;
-    --text: #E8E7E3; --text2: #B0AFA8; --text3: #6A6A64;
-    --border: rgba(232,231,227,0.08);
-    --accent-light: #2E1F18; --accent-dark: #E8A088;
-    --blue-light: #18243A; --blue-dark: #88B0E8;
-    --green-light: #142A1E; --green-dark: #78D4A0;
-    --amber-light: #2A2414; --amber-dark: #E8C878;
-    --purple-light: #221A38; --purple-dark: #B8A0E8;
-    --red-light: #2E1818; --red-dark: #E88888;
-    --teal-light: #142A26; --teal-dark: #78D4C4;
-  }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.7;
+  min-height: 100vh;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height:1.65; -webkit-font-smoothing: antialiased; }
 
-.page { max-width:960px; margin:0 auto; padding: 3rem 2rem 4rem; }
-@media (max-width:640px) { .page { padding: 2rem 1.25rem 3rem; } }
+/* --- NOISE TEXTURE OVERLAY --- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 0;
+}
 
-/* Header */
-.masthead { margin-bottom: 3rem; }
-.masthead h1 { font-family: var(--serif); font-size: 2rem; font-weight: 400; line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
-.masthead .sub { font-size: 0.85rem; color: var(--text2); margin-bottom: 1.25rem; }
-.source-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 0.5rem; }
-.src { font-size: 0.7rem; font-family: var(--mono); padding: 3px 10px; border-radius: 4px; background: var(--bg2); color: var(--text3); border: 0.5px solid var(--border); letter-spacing: 0.02em; }
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
 
-/* Navigation tabs */
-.nav { display: flex; gap: 2px; flex-wrap: wrap; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0; }
-.nav-btn { font-family: var(--sans); font-size: 0.75rem; font-weight: 500; padding: 8px 16px; background: transparent; border: none; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; margin-bottom: -1px; }
-.nav-btn:hover { color: var(--text2); }
-.nav-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+/* --- HEADER --- */
+.header {
+  text-align: center;
+  padding: 3rem 0 2.5rem;
+  position: relative;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal-400), transparent);
+}
+.header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, var(--text-primary) 40%, var(--teal-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+.header .meta-line {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  margin-top: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
-/* Sections */
-.section { display: none; }
-.section.active { display: block; }
+/* --- NAVIGATION TABS --- */
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem 0 2.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 12px 0;
+  background: linear-gradient(180deg, var(--bg-deep) 60%, transparent);
+}
+.nav-tab {
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+  border-radius: 100px;
+  border: 0.5px solid var(--border-dim);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.nav-tab:hover { border-color: var(--border-med); color: var(--text-primary); background: var(--bg-card-hover); }
+.nav-tab.active {
+  background: var(--teal-50);
+  border-color: var(--teal-400);
+  color: var(--teal-500);
+  font-weight: 500;
+}
 
-/* Section headers */
-.sec-head { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; margin: 0 0 0.25rem; }
-.sec-desc { font-size: 0.82rem; color: var(--text2); margin-bottom: 1.75rem; }
+/* --- PANELS --- */
+.panel { display: none; animation: fadeIn 0.35s ease; }
+.panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Cards */
-.card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 18px 20px; margin-bottom: 12px; cursor: pointer; transition: border-color 0.2s; position: relative; }
-.card:hover { border-color: var(--text3); }
-.card.open { cursor: default; }
-.card-bar { position: absolute; top:0; left:0; width: 3px; height: 100%; border-radius: 8px 0 0 8px; }
-.card-head { display: flex; align-items: baseline; gap: 10px; }
-.card-id { font-family: var(--mono); font-size: 0.65rem; font-weight: 500; padding: 2px 7px; border-radius: 3px; flex-shrink: 0; }
-.card-title { font-size: 0.9rem; font-weight: 700; flex: 1; }
-.card-src { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); flex-shrink: 0; }
-.card-brief { font-size: 0.8rem; color: var(--text2); margin-top: 4px; padding-left: 0; }
-.card-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 0.5px solid var(--border); }
-.card.open .card-body { display: block; }
+/* --- CARDS --- */
+.card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border-dim);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover { border-color: var(--border-med); }
 
-.db { margin-bottom: 14px; }
-.db-label { font-family: var(--mono); font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 3px; }
-.db-text { font-size: 0.82rem; color: var(--text2); line-height: 1.7; }
-.db-text b { color: var(--text); font-weight: 600; }
+.card-glow-teal { border-left: 2px solid var(--teal-400); box-shadow: inset 4px 0 12px -6px var(--teal-glow); }
+.card-glow-purple { border-left: 2px solid var(--purple-400); box-shadow: inset 4px 0 12px -6px var(--purple-glow); }
+.card-glow-coral { border-left: 2px solid var(--coral-400); box-shadow: inset 4px 0 12px -6px var(--coral-glow); }
+.card-glow-amber { border-left: 2px solid var(--amber-400); box-shadow: inset 4px 0 12px -6px var(--amber-glow); }
+.card-glow-red { border-left: 2px solid var(--red-400); box-shadow: inset 4px 0 12px -6px var(--red-glow); }
+.card-glow-blue { border-left: 2px solid var(--blue-400); box-shadow: inset 4px 0 12px -6px var(--blue-glow); }
+.card-glow-green { border-left: 2px solid var(--green-400); box-shadow: inset 4px 0 12px -6px var(--green-glow); }
 
-.eq { font-family: var(--mono); font-size: 0.78rem; background: var(--bg3); padding: 8px 14px; border-radius: 6px; margin: 6px 0; overflow-x: auto; color: var(--text); display: block; }
+.card-hero {
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border-med);
+  text-align: center;
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+}
+.card-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at center, var(--teal-glow), transparent 70%);
+  pointer-events: none;
+}
+.card-hero p { position: relative; }
 
-.tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-.tag { font-family: var(--mono); font-size: 0.62rem; padding: 2px 8px; border-radius: 3px; }
+/* --- TYPOGRAPHY --- */
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+h2:first-child { margin-top: 0; }
+h3 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  color: var(--text-primary);
+}
+.sub {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.meta-text {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+}
 
-/* Tables */
-.tbl-wrap { overflow-x: auto; margin: 8px 0; }
-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-th { font-weight: 600; text-align: left; padding: 8px 10px; border-bottom: 1.5px solid var(--border); color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
-td { padding: 7px 10px; border-bottom: 0.5px solid var(--border); color: var(--text2); vertical-align: top; }
-tr:last-child td { border-bottom: none; }
+/* --- BADGES --- */
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-weight: 500;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+.badge-teal { background: var(--teal-50); color: var(--teal-500); border: 0.5px solid rgba(29,158,117,0.2); }
+.badge-purple { background: var(--purple-50); color: var(--purple-500); border: 0.5px solid rgba(127,119,221,0.2); }
+.badge-coral { background: var(--coral-50); color: var(--coral-500); border: 0.5px solid rgba(216,90,48,0.2); }
+.badge-amber { background: var(--amber-50); color: var(--amber-500); border: 0.5px solid rgba(239,159,39,0.2); }
+.badge-red { background: var(--red-50); color: var(--red-500); border: 0.5px solid rgba(226,75,74,0.2); }
+.badge-blue { background: var(--blue-50); color: var(--blue-500); border: 0.5px solid rgba(55,138,221,0.2); }
+.badge-green { background: var(--green-50); color: var(--green-500); border: 0.5px solid rgba(99,153,34,0.2); }
+.badge-gray { background: rgba(255,255,255,0.04); color: var(--text-secondary); border: 0.5px solid var(--border-dim); }
 
-/* Tree */
-.tree { font-size: 0.8rem; color: var(--text2); line-height: 2; padding-left: 0; }
-.tree .l0 { font-weight: 700; color: var(--text); margin-top: 8px; }
-.tree .l1 { padding-left: 1.5rem; }
-.tree .l2 { padding-left: 3rem; font-size: 0.75rem; color: var(--text3); }
-.tree .arrow { color: var(--text3); margin-right: 4px; }
+/* --- GRID --- */
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 
-/* Outline for map */
-.outline { counter-reset: pillar; }
-.o-section { margin-bottom: 1.5rem; }
-.o-label { font-family: var(--mono); font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; padding: 3px 10px; border-radius: 3px; display: inline-block; margin-bottom: 6px; }
-.o-title { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 6px; }
-.o-list { list-style: none; padding-left: 1rem; }
-.o-list li { font-size: 0.82rem; color: var(--text2); padding: 3px 0; position: relative; }
-.o-list li::before { content: "—"; position: absolute; left: -1rem; color: var(--text3); }
-.o-note { font-size: 0.78rem; color: var(--text3); font-style: italic; margin-top: 4px; padding-left: 1rem; }
+/* --- TABLE --- */
+.table-wrap { overflow-x: auto; margin: 0.75rem 0; border-radius: var(--radius-md); border: 0.5px solid var(--border-dim); }
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+th { text-align: left; padding: 10px 14px; background: var(--bg-surface); font-weight: 500; color: var(--text-secondary); }
+td { padding: 10px 14px; border-top: 0.5px solid var(--border-dim); vertical-align: top; }
 
-/* Print hint */
-.print-hint { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 0.5px solid var(--border); }
+/* --- EXPANDABLE --- */
+.expand-toggle {
+  cursor: pointer;
+  user-select: none;
+  color: var(--teal-400);
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0.5rem;
+  transition: color 0.15s;
+}
+.expand-toggle:hover { color: var(--teal-500); }
+.expand-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding-top: 0;
+}
+.expand-content.open {
+  max-height: 500px;
+  padding-top: 0.75rem;
+  margin-top: 0.5rem;
+  border-top: 0.5px solid var(--border-dim);
+}
+
+/* --- TREE / LINEAGE --- */
+.tree-line {
+  border-left: 2px solid var(--border-med);
+  padding-left: 20px;
+  margin-left: 6px;
+  margin-top: 0.75rem;
+}
+.tree-node {
+  position: relative;
+  margin-bottom: 14px;
+  padding-left: 0;
+}
+.tree-node::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid;
+}
+.tree-node.intro::before { border-color: var(--teal-400); background: var(--teal-50); }
+.tree-node.challenge::before { border-color: var(--red-400); background: var(--red-50); }
+.tree-node.refine::before { border-color: var(--blue-400); background: var(--blue-50); }
+.tree-node.consensus::before { border-color: var(--purple-400); background: var(--purple-50); }
+.tree-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+.tree-node.intro .tree-label { color: var(--teal-400); }
+.tree-node.challenge .tree-label { color: var(--red-400); }
+.tree-node.refine .tree-label { color: var(--blue-400); }
+.tree-node.consensus .tree-label { color: var(--purple-400); }
+
+/* --- READING LIST --- */
+.reading-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 1rem 0;
+}
+.reading-item + .reading-item { border-top: 0.5px solid var(--border-dim); }
+.reading-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  min-width: 36px;
+  line-height: 1.1;
+}
+
+/* --- PILAR COUNTER --- */
+.pilar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-right: 8px;
+  flex-shrink: 0;
+  background: var(--teal-50);
+  color: var(--teal-500);
+  border: 0.5px solid rgba(29,158,117,0.25);
+}
+
+/* --- STATS ROW --- */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+.stat-chip {
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
+}
+.stat-chip .stat-value {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 2px;
+}
+.stat-chip .stat-label {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 640px) {
+  .container { padding: 1rem 1rem 3rem; }
+  .header h1 { font-size: 1.5rem; }
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+  .nav-tabs { gap: 3px; }
+  .nav-tab { padding: 6px 12px; font-size: 0.76rem; }
+  .stats-row { flex-direction: column; }
+}
 </style>
 </head>
 <body>
-<div class="page">
 
-<div class="masthead">
-  <h1>Daño por radiación en materiales:<br>mapa completo de la literatura</h1>
-  <p class="sub">Análisis sistemático de dos publicaciones fundamentales — 8 dimensiones de análisis</p>
-  <div class="source-row">
-    <span class="src">R — Reali et al., J. Nucl. Mater. 2026</span>
-    <span class="src">N — Nordlund et al., J. Nucl. Mater. 2018</span>
-    <span class="src">J — Jiang et al., npj Comput. Mater. 2026</span>
-    <span class="src">L — Liu et al., arXiv 2025</span>
-    <span class="src">Lin — Lin et al., Materials 2026</span>
+<div class="container">
+
+<!-- ==================== HEADER ==================== -->
+<header class="header">
+  <h1>Daño por radiación en materiales nucleares</h1>
+  <p class="subtitle">Simulación atomística, potenciales interatómicos y aleaciones avanzadas — mapa de conocimiento interactivo</p>
+  <p class="meta-line">Protocolo de 9 prompts · 10 papers · 2018–2026</p>
+</header>
+
+<div class="stats-row">
+  <div class="stat-chip">
+    <span class="stat-value" style="color:var(--teal-400)">10</span>
+    <span class="stat-label">Papers analizados</span>
+  </div>
+  <div class="stat-chip">
+    <span class="stat-value" style="color:var(--purple-400)">5</span>
+    <span class="stat-label">Pilares establecidos</span>
+  </div>
+  <div class="stat-chip">
+    <span class="stat-value" style="color:var(--amber-400)">3</span>
+    <span class="stat-label">Zonas en disputa</span>
+  </div>
+  <div class="stat-chip">
+    <span class="stat-value" style="color:var(--coral-400)">5</span>
+    <span class="stat-label">Vacíos identificados</span>
+  </div>
+  <div class="stat-chip">
+    <span class="stat-value" style="color:var(--red-400)">4</span>
+    <span class="stat-label">Supuestos ocultos</span>
   </div>
 </div>
 
-<div class="nav">
-  <button class="nav-btn active" onclick="showTab('intake')">1. Intake</button>
-  <button class="nav-btn" onclick="showTab('contra')">2. Contradicciones</button>
-  <button class="nav-btn" onclick="showTab('citation')">3. Cadena de citas</button>
-  <button class="nav-btn" onclick="showTab('gaps')">4. Brechas</button>
-  <button class="nav-btn" onclick="showTab('methods')">5. Metodologías</button>
-  <button class="nav-btn" onclick="showTab('synthesis')">6. Síntesis</button>
-  <button class="nav-btn" onclick="showTab('assumptions')">7. Supuestos</button>
-  <button class="nav-btn" onclick="showTab('map')">8. Mapa</button>
-  <button class="nav-btn" onclick="showTab('explain')">Explicación final</button>
-</div>
+<!-- ==================== NAVIGATION ==================== -->
+<nav class="nav-tabs" id="nav">
+  <button class="nav-tab active" onclick="showTab(0)">Mapa del campo</button>
+  <button class="nav-tab" onclick="showTab(1)">Contradicciones</button>
+  <button class="nav-tab" onclick="showTab(2)">Linaje intelectual</button>
+  <button class="nav-tab" onclick="showTab(3)">Vacíos</button>
+  <button class="nav-tab" onclick="showTab(4)">Auditoría de métodos</button>
+  <button class="nav-tab" onclick="showTab(5)">Supuestos ocultos</button>
+  <button class="nav-tab" onclick="showTab(6)">Síntesis final</button>
+</nav>
 
-<!-- ======================= TAB 1: INTAKE ======================= -->
-<div class="section active" id="intake">
-<h2 class="sec-head">Protocolo de intake</h2>
-<p class="sec-desc">Cada paper mapeado por su claim central, agrupados por clusters de supuestos compartidos.</p>
+<!-- ====================================================
+     TAB 0 — MAPA DEL CAMPO (Prompts 1 + 8)
+     ==================================================== -->
+<section class="panel active" id="tab0">
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--blue)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--blue-light);color:var(--blue-dark)">N-2018</span>
-    <span class="card-title">Nordlund et al. — "Primary radiation damage"</span>
+  <div class="card card-hero">
+    <p style="font-size:1.05rem;font-weight:400;max-width:680px;margin:0 auto;line-height:1.65;position:relative">
+      El daño primario por radiación en aleaciones nucleares es un proceso multiescala gobernado por la producción de pares de Frenkel en cascadas de desplazamiento. La complejidad composicional de las aleaciones avanzadas (HEA, MPEA) modifica fundamentalmente esta evolución, ofreciendo vías de diseño para mejorar la resistencia a radiación.
+    </p>
+    <p class="meta-text" style="margin-top:1rem;position:relative">Afirmación central del campo</p>
   </div>
-  <div class="card-brief"><b>Claim central:</b> El modelo NRT-dpa sobreestima defectos sobrevivientes por factor ~3 y subestima mezcla atómica por factor ~30; los nuevos modelos ARC-DPA y RPA corrigen esto incorporando recombinación atermal y mezcla en cascadas.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Cobertura</div>
-      <div class="db-text">Review exhaustiva del daño primario por radiación: TDE, cascadas en metales/semiconductores/cerámicos/carbono, materiales nanoestructurados, mezcla atómica, modelos KP/NRT/ARC-DPA/RPA, limitaciones de BCA y MD, modelado multiescala. 30 páginas, ~410 referencias.</div>
-    </div>
-    <div class="db">
-      <div class="db-label">Aporte específico</div>
-      <div class="db-text">Propone dos nuevos estimadores estándar (ARC-DPA para defectos, RPA para mezcla) calibrados con MD y validados con experimentos criogénicos. Proporciona constantes para Fe, Cu, Ni, Pd, Pt, W.</div>
-    </div>
-  </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--accent)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--accent-light);color:var(--accent-dark)">R-2026</span>
-    <span class="card-title">Reali et al. — "State of the art, gaps, and prospects"</span>
-  </div>
-  <div class="card-brief"><b>Claim central:</b> El modelado computacional es esencial para diseñar materiales de fusión antes de que existan datos experimentales con neutrones de 14 MeV, y requiere integración multiescala completa desde DFT hasta simulación del reactor.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Cobertura</div>
-      <div class="db-text">Revisión del 7º Workshop Fusion Materials (2024): transmutación, aleaciones W/SMART/HEA/Fe-Cr, daño a alta dosis, simulación atomística (CRA), potenciales ML, materiales no metálicos, modelado multiescala. Enfoque en fusión D-T y DEMO.</div>
+  <!-- Grupos de supuestos compartidos (Prompt 1) -->
+  <h2>Grupos de supuestos compartidos</h2>
+  <div class="grid2">
+    <div class="card card-glow-teal">
+      <span class="badge badge-teal">Grupo A</span>
+      <h3>MD como herramienta central</h3>
+      <p class="sub">P1, P2, P4, P5, P6, P7, P8 asumen que la dinámica molecular captura adecuadamente la física esencial de las cascadas.</p>
     </div>
-    <div class="db">
-      <div class="db-label">Aporte específico</div>
-      <div class="db-text">Mapea brechas entre estado del arte y necesidades de reactores comerciales. Enfatiza que transmutación puede ser tan importante como daño por desplazamiento. Identifica potenciales ML como herramienta transformadora.</div>
+    <div class="card card-glow-blue">
+      <span class="badge badge-blue">Grupo B</span>
+      <h3>HEA con resistencia superior</h3>
+      <p class="sub">P2, P5, P8 comparten la premisa de que la complejidad composicional suprime movilidad de defectos y favorece recombinación.</p>
     </div>
-  </div>
-</div>
-
-<h3 style="font-size:0.85rem;font-weight:600;margin:2rem 0 1rem;color:var(--text2);">Papers adicionales (2025-2026)</h3>
-
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--amber)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--amber-light);color:var(--amber-dark)">J-2026</span>
-    <span class="card-title">Jiang et al. — "Scaling reliable IAPs via pretrained atomic models"</span>
-  </div>
-  <div class="card-brief"><b>Claim central:</b> Un modelo atómico grande pretrained (DPA2) fine-tuned solo con datos de la aleación quinaria Ta-Nb-W-Mo-V supera a los MLIAPs convencionales y se transfiere a subsistemas sin datos adicionales — reproduciendo cascadas y propiedades mecánicas.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Aporte específico</div>
-      <div class="db-text">Primera aplicación de pretraining multi-task a aleaciones nucleares estructurales. DPA2-5E (trained on quinary only) reproduce FPs idénticos a DPA2-All (trained on 31 subsystems) para cascadas de 2-10 keV. Se extiende a FCC+L1₂ microestructuras y ambientes corrosivos Pb-Bi+O. Estrategia "one-for-many": un modelo, múltiples composiciones.</div>
+    <div class="card card-glow-coral">
+      <span class="badge badge-coral">Grupo C</span>
+      <h3>Potenciales como cuello de botella</h3>
+      <p class="sub">P1, P2, P8, P10 reconocen que los potenciales clásicos (EAM, Tersoff) son insuficientes para aleaciones complejas.</p>
     </div>
-    <div class="db">
-      <div class="db-label">Limitación reconocida</div>
-      <div class="db-text">DPA2-5E subestima sistemáticamente yield strength, especialmente en subsistemas simples. Causa: los datasets de pretraining están dominados por configuraciones de equilibrio, lo que sesga la PES hacia energías/fuerzas bajas bajo condiciones de no-equilibrio.</div>
+    <div class="card card-glow-purple">
+      <span class="badge badge-purple">Grupo D</span>
+      <h3>Necesidad de modelado multiescala</h3>
+      <p class="sub">P1, P3, P4, P9 asumen que la integración de DFT, MD, cluster dynamics, crystal plasticity y FEM es necesaria.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--teal)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--teal-light);color:var(--teal-dark)">L-2025</span>
-    <span class="card-title">Liu et al. — "CSRO impact on radiation damage in MoNbTaVW"</span>
-  </div>
-  <div class="card-brief"><b>Claim central:</b> El orden químico de corto alcance (CSRO) en MoNbTaVW mejora la resistencia a radiación facilitando recombinación de defectos, pero se degrada rápidamente bajo irradiación acumulativa (WC < 0.3 a 0.03 dpa).</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Aporte específico</div>
-      <div class="db-text">Hybrid MC/MD con NEP en 6.75M átomos. CSRO (pares Mo-Ta, Mo-Nb tipo B2) reduce E_m de intersticiales (1.33→1.08 eV) y aumenta E_m de vacancias (1.10→1.54 eV), mejorando recombinación en fase de recuperación. Pero 1000 cascadas superpuestas de 10 keV destruyen el CSRO. V es el intersticial dominante.</div>
+  <!-- Pilares (Prompt 8) -->
+  <h2>Pilares establecidos</h2>
+  <div class="grid2">
+    <div class="card card-glow-teal">
+      <h3><span class="pilar-icon">1</span>Modelo arc-dpa</h3>
+      <p class="sub">NRT sobreestima producción de defectos ~3×. La corrección arc-dpa es más precisa pero aún no adoptada regulatoriamente.</p>
+      <div style="margin-top:8px"><span class="badge badge-teal">P1 Nordlund</span><span class="badge badge-gray">Universalmente aceptado</span></div>
+    </div>
+    <div class="card card-glow-teal">
+      <h3><span class="pilar-icon">2</span>Asimetría intersticial/vacancia</h3>
+      <p class="sub">Intersticiales: altamente móviles, se agrupan en clusters y loops. Vacancias: lentas y dispersas. Gobierna endurecimiento y recristalización.</p>
+      <div style="margin-top:8px"><span class="badge badge-teal">P4 P6 P7</span><span class="badge badge-gray">Múltiples sistemas</span></div>
+    </div>
+    <div class="card card-glow-teal">
+      <h3><span class="pilar-icon">3</span>Superioridad de ML-IAP</h3>
+      <p class="sub">Potenciales de machine learning superan a empíricos en precisión y transferibilidad para aleaciones complejas.</p>
+      <div style="margin-top:8px"><span class="badge badge-teal">P2 P8</span><span class="badge badge-blue">P10 respalda</span></div>
+    </div>
+    <div class="card card-glow-teal">
+      <h3><span class="pilar-icon">4</span>Beneficio de complejidad composicional</h3>
+      <p class="sub">Aleaciones multi-componente generalmente producen menos defectos netos que los metales puros.</p>
+      <div style="margin-top:8px"><span class="badge badge-teal">P1 P2 P5 P7 P8</span></div>
+    </div>
+    <div class="card card-glow-teal">
+      <h3><span class="pilar-icon">5</span>Necesidad de integración multiescala</h3>
+      <p class="sub">Ningún método aislado cubre desde la cascada (ps) hasta la vida en servicio (años); la integración DFT → MD → CPFEM es necesaria.</p>
+      <div style="margin-top:8px"><span class="badge badge-teal">P1 P3 P4 P9</span></div>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--purple)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--purple-light);color:var(--purple-dark)">Lin-2026</span>
-    <span class="card-title">Lin et al. — "Defect evolution in IN617 under successive cascades"</span>
-  </div>
-  <div class="card-brief"><b>Claim central:</b> En IN617 (Ni-Cr-Co FCC), el endurecimiento por irradiación está gobernado por el clustering agresivo de intersticiales (88.4% en clusters), no por formación de voids de vacancias (68.8% aisladas).</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Aporte específico</div>
-      <div class="db-text">75 cascadas sucesivas de 5 keV a 300K con EAM+ZBL. FPs crecen casi-linealmente. Densidad de dislocaciones satura a ~4.5×10⁻⁴ Å⁻² después de ~60 cascadas. Red dominada por Shockley partials 1/6⟨112⟩ con reorganización continua. Cr y Co se atrapan en clusters intersticiales (solute pinning).</div>
+  <!-- Zonas en disputa -->
+  <h2>Zonas en disputa</h2>
+  <div class="grid2">
+    <div class="card card-glow-amber">
+      <h3>Mecanismo del CSRO</h3>
+      <p class="sub">¿Promueve o suprime movilidad de defectos? La respuesta es dependiente del sistema (BCC vs FCC, composición).</p>
+      <div style="margin-top:8px"><span class="badge badge-amber">P2 vs P7</span></div>
     </div>
-    <div class="db">
-      <div class="db-label">Limitaciones</div>
-      <div class="db-text">Potencial EAM clásico (no ML). Sin electronic stopping explícito. Solo 300K (IN617 opera a >900K). Modelo simplificado Ni-Cr-Co sin Mo, Al, Ti. Monocristal sin bordes de grano.</div>
+    <div class="card card-glow-amber">
+      <h3>Importancia de efectos electrónicos</h3>
+      <p class="sub">¿Dónde está el umbral para incluir Te en simulaciones? Puristas (P5, P10) dicen siempre; pragmáticos (P2, P8) dicen que a baja energía se puede ignorar.</p>
+      <div style="margin-top:8px"><span class="badge badge-amber">P5 P10 vs P2 P8</span></div>
     </div>
-  </div>
-</div>
-
-<h3 style="font-size:0.85rem;font-weight:600;margin:2rem 0 1rem;color:var(--text2);">Clusters de supuestos compartidos</h3>
-
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--green)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--green-light);color:var(--green-dark)">C1</span>
-    <span class="card-title">Cluster: El daño primario determina todo lo que sigue</span>
-  </div>
-  <div class="card-brief">Ambos papers comparten que entender el estado de daño primario (~ps) es prerrequisito para toda predicción de largo plazo.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">N fundamenta esto formalmente con la cascada de escalas temporales (balístico → heat spike → recristalización). R lo asume como axioma y construye la cadena multiescala sobre esta base. Ambos acuerdan que NRT-dpa es inadecuado como predictor de daño real pero útil como estándar de dosis.</div>
+    <div class="card card-glow-amber">
+      <h3>Transferibilidad desde monocristal</h3>
+      <p class="sub">Bordes de grano cambian fundamentalmente la evolución de defectos (P3, P6) pero la mayoría de simulaciones son en monocristales perfectos.</p>
+      <div style="margin-top:8px"><span class="badge badge-amber">P3 P6 reconocen</span></div>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--green)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--green-light);color:var(--green-dark)">C2</span>
-    <span class="card-title">Cluster: Los potenciales interatómicos son el cuello de botella</span>
-  </div>
-  <div class="card-brief">Ambos identifican la fiabilidad de potenciales como la limitación central de las predicciones atomísticas.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">N muestra variación significativa en fracción de clusters entre potenciales para Fe. R propone potenciales ML como solución pero reconoce que no están validados para cascadas de alta energía. Ambos coinciden en que la fracción de daño en clusters no es predecible con confianza.</div>
+  <!-- Preguntas de frontera -->
+  <h2>Preguntas de frontera</h2>
+  <div class="grid2">
+    <div class="card card-glow-coral">
+      <h3>Diseño inverso de aleaciones</h3>
+      <p class="sub">¿Podemos PREDECIR la composición óptima resistente a radiación usando herramientas computacionales, en vez de descubrirla por prueba y error?</p>
+    </div>
+    <div class="card card-glow-coral">
+      <h3>Puente cuantitativo MD → continuo</h3>
+      <p class="sub">¿Cómo pasar de conteos de defectos en ps/nm a propiedades mecánicas medibles en días/cm sin parámetros de ajuste?</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--green)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--green-light);color:var(--green-dark)">C3</span>
-    <span class="card-title">Cluster: La validación experimental es insuficiente</span>
-  </div>
-  <div class="card-brief">Ambos reconocen que no existe fuente de neutrones de 14 MeV adecuada para validar los modelos de fusión.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">N valida ARC-DPA con experimentos de resistividad criogénica (existentes). R señala que para fusión, los datos experimentales son fundamentalmente incompletos porque IFMIF/DONES aún no existe. Este es el punto de divergencia: N trabaja con lo disponible, R mapea lo que falta.</div>
+  <!-- Lecturas esenciales -->
+  <h2>3 papers esenciales para un recién llegado</h2>
+  <div class="card">
+    <div class="reading-item">
+      <span class="reading-num">1</span>
+      <div>
+        <h3>Nordlund et al. (2018) — P1</h3>
+        <p class="sub">LA review fundamental. Define el vocabulario (NRT, arc-dpa, cascada, spike térmico), establece el estado del arte y es citada por todos los demás. <strong>Leer primero.</strong></p>
+      </div>
+    </div>
+    <div class="reading-item">
+      <span class="reading-num">2</span>
+      <div>
+        <h3>Tonks et al. (2026) — P9</h3>
+        <p class="sub">La visión de futuro. Explica cómo ICME se aplica a materiales nucleares, conecta todas las escalas, y muestra hacia dónde va el campo. <strong>Leer segundo.</strong></p>
+      </div>
+    </div>
+    <div class="reading-item">
+      <span class="reading-num">3</span>
+      <div>
+        <h3>Jiang et al. (2026) — P8</h3>
+        <p class="sub">La herramienta del futuro. Muestra cómo se construyen ML-IAP modernos para aleaciones complejas con pretraining DPA2. <strong>Leer tercero.</strong></p>
+      </div>
     </div>
   </div>
-</div>
-</div>
 
-<!-- ======================= TAB 1b: NEW PAPERS ======================= -->
-<!-- These are injected into the intake section -->
+</section>
 
-</div>
+<!-- ====================================================
+     TAB 1 — CONTRADICCIONES (Prompt 2)
+     ==================================================== -->
+<section class="panel" id="tab1">
 
-<!-- Inject new papers into intake via JS at bottom -->
+  <h2>Contradicciones directas entre papers</h2>
 
-<!-- ======================= TAB 2: CONTRADICCIONES ======================= -->
-<div class="section" id="contra">
-<h2 class="sec-head">Contradicciones identificadas</h2>
-<p class="sec-desc">Puntos donde las fuentes divergen o se tensan entre sí. Actualizado con 5 papers.</p>
-
-<div class="tbl-wrap">
-<table>
-<tr>
-  <th style="width:18%">Punto</th>
-  <th style="width:22%">Posición A</th>
-  <th style="width:22%">Posición B</th>
-  <th style="width:18%">Papers</th>
-  <th style="width:20%">Razón</th>
-</tr>
-<tr>
-  <td><b>Saturación de ξ a alta energía</b></td>
-  <td>ARC-DPA asume saturación a constante c.</td>
-  <td>Producción supralineal en W/Au/Pt >100 keV es fenómeno importante, no excepción.</td>
-  <td>N vs R</td>
-  <td>8 años más de datos de alta energía con potenciales ML en 2026.</td>
-</tr>
-<tr>
-  <td><b>¿Los potenciales ML necesitan datos de subsistemas?</b></td>
-  <td>Los potenciales ML convencionales requieren datasets exhaustivos de todos los subsistemas (binarios, ternarios, etc.).</td>
-  <td>Con pretraining multi-task (DPA2), basta entrenar solo con la aleación quinaria y se transfiere a subsistemas con precisión comparable.</td>
-  <td>R vs J</td>
-  <td>Jiang demuestra que el LAM pretrained DPA2-5E reproduce cascadas en Ta-Nb-W-Mo y Ta-W sin haber visto esos datos. Esto desafía el paradigma "data-hungry" de MLIAPs.</td>
-</tr>
-<tr>
-  <td><b>Efecto del CSRO en resistencia a radiación</b></td>
-  <td>CSRO aumenta energías de migración de intersticiales y vacancias, suprimiendo difusión y agregación (Liu et al. en FCC MPEAs).</td>
-  <td>CSRO en BCC MoNbTaVW <i>facilita</i> difusión de intersticiales y <i>suprime</i> vacancias, mejorando recombinación. Pero el CSRO se degrada rápidamente a solo 0.03 dpa.</td>
-  <td>L vs literatura previa</td>
-  <td>Liu et al. revelan que el mecanismo en BCC RHEAs es opuesto al reportado en FCC: el CSRO acelera intersticiales (V domina) mientras frena vacancias. El hallazgo de degradación rápida del CSRO cuestiona su utilidad práctica.</td>
-</tr>
-<tr>
-  <td><b>Asimetría intersticiales vs vacancias en cascadas superpuestas</b></td>
-  <td>Nordlund: clusters de vacancias se forman en el centro de cascadas; intersticiales en la periferia. Ambos son importantes.</td>
-  <td>Lin (IN617): asimetría dramática — 88.4% de intersticiales en clusters vs 68.8% de vacancias aisladas después de 75 cascadas. Endurecimiento dominado por intersticiales.</td>
-  <td>N vs Lin</td>
-  <td>Lin trabaja en FCC Ni-Cr-Co a 300K donde movilidad de vacancias es muy baja. En BCC o a alta T, la dinámica sería distinta. La asimetría es real pero dependiente de T y estructura cristalina.</td>
-</tr>
-<tr>
-  <td><b>Transmutación vs desplazamiento</b></td>
-  <td>N excluye transmutación. Se enfoca en daño por desplazamiento.</td>
-  <td>R: transmutación puede ser tan importante como desplazamiento en fusión.</td>
-  <td>N vs R</td>
-  <td>Scope distinto: fisión vs fusión.</td>
-</tr>
-</table>
-</div>
-</div>
-
-<!-- ======================= TAB 3: CADENAS DE CITAS ======================= -->
-<div class="section" id="citation">
-<h2 class="sec-head">Cadenas de citación</h2>
-<p class="sec-desc">Linaje intelectual de los 3 conceptos más citados, como un árbol genealógico.</p>
-
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--purple)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--purple-light);color:var(--purple-dark)">CC1</span>
-    <span class="card-title">Concepto: Desplazamientos por átomo (dpa)</span>
+  <div class="card card-glow-red" style="margin-bottom:18px">
+    <h3>CSRO y movilidad de defectos</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:30%">Paper</th><th>Postura</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">P2 — Liu et al.</span></td>
+            <td>El CSRO <strong>promueve</strong> la difusión intersticial mientras <strong>suprime</strong> la migración de vacancias en BCC (MoNbTaVW)</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-purple">P7 — Rahman et al.</span></td>
+            <td>El ordenamiento químico (CSS) <strong>inhibe</strong> la formación y crecimiento de clusters intersticiales al aumentar barreras de migración en FCC (Fe-Ni-Cu)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub" style="margin-top:10px"><strong>¿Por qué no coinciden?</strong> P2 estudia un sistema BCC (MoNbTaVW) con potenciales NEP (neuroevolution). P7 estudia un sistema FCC (Fe-Ni-Cu) con potencial EAM clásico. La estructura cristalina, la composición y el tipo de potencial interatómico generan comportamientos opuestos del CSRO sobre la movilidad de defectos.</p>
   </div>
-  <div class="card-brief">De Kinchin-Pease (1955) a ARC-DPA (2018) — 63 años de evolución</div>
-  <div class="card-body">
-    <div class="tree">
-      <div class="l0"><span class="arrow">●</span> Kinchin & Pease, 1955 — Primer modelo analítico: N_d = T_d / 2E_d</div>
-      <div class="l1"><span class="arrow">├</span> Lindhard et al., 1963 — Teoría de stopping power, introduce energía de daño nuclear</div>
-      <div class="l1"><span class="arrow">├</span> Robinson & Torrens, 1974 — BCA simulations → factor 0.8 → <b>NRT-dpa</b></div>
-      <div class="l2"><span class="arrow">│</span> Norgett, Robinson & Torrens, 1975 — Formalización como estándar internacional</div>
-      <div class="l1"><span class="arrow">├</span> Bacon, Gao, Osetsky, 2000 — MD reporta exponentes sublineales (ley de potencia)</div>
-      <div class="l1"><span class="arrow">├</span> Stoller, 2012 — Review comprensiva de formación de daño primario en metales</div>
-      <div class="l1"><span class="arrow">└</span> <b>Nordlund et al., 2018 — ARC-DPA + RPA</b>: corrección formal con función de eficiencia</div>
-      <div class="l2"><span class="arrow">└</span> Simakov et al., 2018 — Primera aplicación a condiciones de reactor de fisión, valida con datos criogénicos</div>
-      <div class="l0" style="margin-top:12px"><span class="arrow">○</span> Consenso actual: NRT-dpa se retiene como estándar de dosis; ARC-DPA como predictor de daño real.</div>
+
+  <div class="card card-glow-red">
+    <h3>Suficiencia de potenciales clásicos para daño por radiación</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:35%">Paper</th><th>Postura</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">P6 — Lin et al.</span><br><span class="badge badge-blue">P7 — Rahman et al.</span></td>
+            <td>Potenciales EAM clásicos son <strong>suficientes</strong> para simular cascadas y producen resultados útiles y comparables</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-coral">P10 — Wood et al.</span></td>
+            <td>Los IAP clásicos <strong>pierden grados de libertad electrónicos esenciales</strong> para modelar correctamente daño por radiación</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-purple">P8 — Jiang et al.</span></td>
+            <td>ML-IAP como <strong>solución intermedia</strong>: precisión cercana a DFT con costo computacional de MD clásica</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub" style="margin-top:10px"><strong>¿Por qué no coinciden?</strong> P6 y P7 trabajan en sistemas bien parametrizados donde EAM funciona razonablemente. P10 adopta una postura teórica más exigente sobre la necesidad de incluir excitaciones electrónicas. P8 ofrece una vía pragmática que reconcilia parcialmente ambas posturas.</p>
+  </div>
+
+</section>
+
+<!-- ====================================================
+     TAB 2 — LINAJE INTELECTUAL (Prompt 3)
+     ==================================================== -->
+<section class="panel" id="tab2">
+
+  <h2>Genealogía de los 3 conceptos centrales</h2>
+
+  <!-- Concepto 1: NRT/arc-dpa -->
+  <div class="card" style="margin-bottom:18px">
+    <h3 style="margin-bottom:4px">Modelo NRT/dpa → arc-dpa</h3>
+    <p class="meta-text" style="margin-bottom:8px">El estándar de cuantificación de daño por radiación y su corrección moderna</p>
+    <div class="tree-line">
+      <div class="tree-node intro">
+        <p class="tree-label">Introducción (1975)</p>
+        <p class="sub">Norgett, Robinson & Torrens proponen el modelo NRT. Estándar durante 40+ años para cuantificar daño por radiación en metales.</p>
+      </div>
+      <div class="tree-node challenge">
+        <p class="tree-label">Cuestionamiento (2018)</p>
+        <p class="sub">Nordlund et al. (P1) demuestran con evidencia masiva de MD + experimentos que NRT sobreestima defectos sobrevivientes por un factor ~3× en metales.</p>
+      </div>
+      <div class="tree-node refine">
+        <p class="tree-label">Refinamiento</p>
+        <p class="sub">Nordlund propone el modelo arc-dpa (athermal recombination-corrected). Jiang (P8) y Liu (P2) usan NRT como referencia pero reconocen sus limitaciones.</p>
+      </div>
+      <div class="tree-node consensus">
+        <p class="tree-label">Consenso actual</p>
+        <p class="sub">arc-dpa es aceptado como más preciso, pero NRT sigue siendo el estándar de la industria por inercia regulatoria (Tonks P9).</p>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--purple)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--purple-light);color:var(--purple-dark)">CC2</span>
-    <span class="card-title">Concepto: Heat spike / thermal spike</span>
-  </div>
-  <div class="card-brief">De Brinkman (1954) a simulaciones de cascadas superpuestas (2020s)</div>
-  <div class="card-body">
-    <div class="tree">
-      <div class="l0"><span class="arrow">●</span> Brinkman, 1954 — Concepto de "depleted zone" en centro de cascada</div>
-      <div class="l1"><span class="arrow">├</span> Seitz & Koehler, 1956 — Primeras estimaciones de saltos atómicos durante heat spike</div>
-      <div class="l1"><span class="arrow">├</span> Vineyard, 1976 — Modelo analítico de mezcla por thermal spike (integral Q/kT)</div>
-      <div class="l1"><span class="arrow">├</span> Diaz de la Rubia & Averback, 1987 — Primera demostración MD de heat spike y T ~10,000K</div>
-      <div class="l2"><span class="arrow">│</span> Confirman distribución Maxwell-Boltzmann en <3 vibraciones → termodinámica local válida</div>
-      <div class="l1"><span class="arrow">├</span> Nordlund & Averback, 1997-1999 — MD de recombinación y mezcla inversa Kirkendall</div>
-      <div class="l1"><span class="arrow">├</span> Calder & Bacon, 2010 — Origen de grandes clusters intersticiales por shockwaves</div>
-      <div class="l1"><span class="arrow">└</span> Granberg et al., 2016-2017 — Cascadas superpuestas masivas en HEAs</div>
-      <div class="l0" style="margin-top:12px"><span class="arrow">○</span> Consenso: Heat spikes son reales, medibles, y explican la recombinación atermal. Debate activo: acoplamiento e-ph y magnones.</div>
+  <!-- Concepto 2: HEA -->
+  <div class="card" style="margin-bottom:18px">
+    <h3 style="margin-bottom:4px">Resistencia a radiación de HEA/MPEA</h3>
+    <p class="meta-text" style="margin-bottom:8px">La promesa de las aleaciones de alta entropía para reactores avanzados</p>
+    <div class="tree-line">
+      <div class="tree-node intro">
+        <p class="tree-label">Introducción (2019–2021)</p>
+        <p class="sub">El-Atwani et al. (2019) y Deluigi et al. (2021) fueron los primeros en demostrar experimental y computacionalmente que las HEA tienen resistencia excepcional a radiación.</p>
+      </div>
+      <div class="tree-node challenge">
+        <p class="tree-label">Cuestionamiento</p>
+        <p class="sub">Liu (P2) matiza que el beneficio del CSRO es transitorio — se destruye a dosis muy bajas. Wood (P10) cuestiona si los potenciales usados capturan la física real.</p>
+      </div>
+      <div class="tree-node refine">
+        <p class="tree-label">Refinamiento</p>
+        <p class="sub">Medvedev (P5) extiende el análisis al régimen ultrarrápido. Jiang (P8) provee potenciales más precisos. Byggmästar calcula energías umbral de desplazamiento específicas para RHEA.</p>
+      </div>
+      <div class="tree-node consensus">
+        <p class="tree-label">Consenso actual</p>
+        <p class="sub">Las HEA son genuinamente más resistentes, pero los mecanismos exactos (CSRO, distorsión de red, difusión lenta) siguen en debate activo y son dependientes del sistema.</p>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--purple)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--purple-light);color:var(--purple-dark)">CC3</span>
-    <span class="card-title">Concepto: Resistencia a radiación por nano/multielemento</span>
-  </div>
-  <div class="card-brief">De metales nanocristalinos (2002) a HEAs equiatómicas (2026)</div>
-  <div class="card-body">
-    <div class="tree">
-      <div class="l0"><span class="arrow">●</span> Samaras et al., 2002 — MD: bordes de grano como sumideros de intersticiales en Ni nc</div>
-      <div class="l1"><span class="arrow">├</span> Bai et al., 2010 — Emisión de intersticiales desde interfaces: mecanismo de aniquilación</div>
-      <div class="l1"><span class="arrow">├</span> Bringa et al., 2012 — ¿Son los nanoporosos resistentes a radiación? Sí, con ventana de parámetros</div>
-      <div class="l1"><span class="arrow">├</span> <b>Granberg et al., 2016</b> — Mecanismo de reducción de daño en HEAs equiatómicas por MD</div>
-      <div class="l2"><span class="arrow">│</span> Heterogeneidad atómica ralentiza acumulación de daño</div>
-      <div class="l1"><span class="arrow">├</span> Reali et al., 2026 — Potenciales ML para HEAs complejas; V en W-Ta cambia tolerancia</div>
-      <div class="l1"><span class="arrow">└</span> SMART alloys (W-Cr-Y-Zr) para seguridad en accidentes</div>
-      <div class="l0" style="margin-top:12px"><span class="arrow">○</span> En debate: estabilidad a largo plazo bajo alta dosis + alta T. La irradiación puede inducir crecimiento de grano.</div>
+  <!-- Concepto 3: ML-IAP -->
+  <div class="card">
+    <h3 style="margin-bottom:4px">Potenciales interatómicos de machine learning</h3>
+    <p class="meta-text" style="margin-bottom:8px">La revolución computacional que cambió las reglas del campo</p>
+    <div class="tree-line">
+      <div class="tree-node intro">
+        <p class="tree-label">Introducción (2007–2010)</p>
+        <p class="sub">Behler & Parrinello (2007) abren el camino. Bartók con GAP (2010) lo extiende. Byggmästar (2020, 2022) aplica GAP a BCC refractarios y aleaciones.</p>
+      </div>
+      <div class="tree-node challenge">
+        <p class="tree-label">Cuestionamiento</p>
+        <p class="sub">La transferibilidad a subsistemas y la estabilidad bajo condiciones extremas (cascadas de alta energía) eran problemáticas en los primeros ML-IAP.</p>
+      </div>
+      <div class="tree-node refine">
+        <p class="tree-label">Refinamiento</p>
+        <p class="sub">Jiang (P8) usa pretraining con Large Atomic Models (DPA2) mostrando transferibilidad superior. Liu (P2) implementa potenciales NEP eficientes en GPU. Wood (P10) propone potenciales layered como siguiente paso.</p>
+      </div>
+      <div class="tree-node consensus">
+        <p class="tree-label">Consenso actual</p>
+        <p class="sub">ML-IAP son el nuevo estándar para simulaciones de cascadas en aleaciones complejas. La frontera es incorporar efectos electrónicos (P10).</p>
+      </div>
     </div>
   </div>
-</div>
-</div>
 
-<!-- ======================= TAB 4: BRECHAS ======================= -->
-<div class="section" id="gaps">
-<h2 class="sec-head">Las 5 preguntas que nadie ha resuelto</h2>
-<p class="sec-desc">Brechas de investigación identificadas. Cada una podría ser un paper transformador.</p>
+</section>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--red)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G1</span>
-    <span class="card-title">¿Cuál es el límite de baja energía del stopping electrónico?</span>
-  </div>
-  <div class="card-brief"><b>Existe porque:</b> es experimentalmente casi imposible de medir por debajo de ~1 keV/amu, y los modelos teóricos divergen.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Más cerca de resolverlo</div>
-      <div class="db-text">Nordlund reconoce que TD-DFT está empezando a calcular stopping explícitamente (Correa 2012, Ojanperä 2014, Lim 2016). Tamm et al. 2018 propone Langevin con correlaciones espaciales para e-ph coupling.</div>
+<!-- ====================================================
+     TAB 3 — VACÍOS (Prompt 4)
+     ==================================================== -->
+<section class="panel" id="tab3">
+
+  <h2>Las 5 preguntas de investigación sin responder</h2>
+
+  <!-- Vacío 1 -->
+  <div class="card card-glow-coral" style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+      <h3>1. Evolución del CSRO bajo irradiación continua a largo plazo</h3>
+      <span class="badge badge-coral">Escala temporal</span>
     </div>
-    <div class="db">
-      <div class="db-label">Qué se necesita</div>
-      <div class="db-text">Simulaciones TD-DFT sistemáticas a bajas energías (<5 eV/amu) acopladas con MD de cascadas para calibrar el crossover stopping↔e-ph coupling. Datos experimentales de mezcla como proxy indirecto.</div>
+    <p class="sub">Las simulaciones MD solo cubren nanosegundos. La destrucción/regeneración de CSRO ocurre en escalas de microsegundos a horas. Ningún método actual puede simular esto directamente.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">Ver análisis completo ▾</span>
+    <div class="expand-content">
+      <p class="sub"><strong>Paper más cercano:</strong> Liu et al. (P2) muestran la degradación rápida del CSRO bajo cascadas, pero no pueden simular la regeneración térmica posterior.</p>
+      <p class="sub" style="margin-top:6px"><strong>Metodología necesaria:</strong> Kinetic Monte Carlo (KMC) parametrizado con ML-IAP + datos de MD para tasas de transición, acoplado a modelos de cluster dynamics a escala mesoscópica.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--red)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G2</span>
-    <span class="card-title">¿Cómo interactúan transmutación + daño + evolución química simultáneamente?</span>
-  </div>
-  <div class="card-brief"><b>Existe porque:</b> cada fenómeno se modela por separado; nadie los acopla en un marco unificado.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Más cerca de resolverlo</div>
-      <div class="db-text">Reali identifica FISPACT-II para evolución isotópica, pero su acoplamiento con MD de cascadas y KMC de difusión no existe. Los potenciales ML podrían ser el puente si se entrenan incluyendo productos de transmutación.</div>
+  <!-- Vacío 2 -->
+  <div class="card card-glow-coral" style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+      <h3>2. Validación experimental directa de cascadas en HEA</h3>
+      <span class="badge badge-coral">Técnicamente imposible</span>
     </div>
-    <div class="db">
-      <div class="db-label">Qué se necesita</div>
-      <div class="db-text">Framework multiescala que inyecte He/H/Re/Os a tasas calculadas por FISPACT-II en simulaciones de daño acumulativo. Probablemente requiere OKMC con feeds de transmutación + potenciales ML multicomponente.</div>
+    <p class="sub">Las cascadas duran picosegundos y son de escala nanométrica. La observación in-situ con resolución atómica temporal durante cascadas es tecnológicamente imposible hoy.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">Ver análisis completo ▾</span>
+    <div class="expand-content">
+      <p class="sub"><strong>Paper más cercano:</strong> Nordlund (P1) revisa la validación indirecta vía resistividad y TEM. Tonks (P9) discute estrategias de validación multiescala.</p>
+      <p class="sub" style="margin-top:6px"><strong>Metodología necesaria:</strong> Experimentos de ion único + caracterización post-mortem con microscopías avanzadas (APT, STEM), combinados con simulaciones MD que reproduzcan las condiciones exactas.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--red)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G3</span>
-    <span class="card-title">¿Qué fracción del daño está en clusters y cuál es su distribución de tamaños real?</span>
-  </div>
-  <div class="card-brief"><b>Existe porque:</b> MD y TEM no se solapan en rango de tamaños; los potenciales discrepan.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Más cerca de resolverlo</div>
-      <div class="db-text">Sand et al. 2017 muestran que la distribución sigue ley de potencia en W, validada con TEM in situ criogénico (Yi et al. 2015). Pero en Fe, los clusters caen bajo el límite observable del TEM. Diferentes potenciales dan variación significativa.</div>
+  <!-- Vacío 3 -->
+  <div class="card card-glow-coral" style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+      <h3>3. Efectos electrónicos en cascadas de aleaciones complejas</h3>
+      <span class="badge badge-coral">Problema abierto</span>
     </div>
-    <div class="db">
-      <div class="db-label">Qué se necesita</div>
-      <div class="db-text">TEM aberration-corrected a temperaturas criogénicas + irradiación in situ con iones de baja energía para cerrar la brecha entre escala MD (<2 nm) y escala TEM clásica (>2 nm). Tu pipeline DGCNN podría contribuir clasificando clusters en simulaciones masivas.</div>
+    <p class="sub">Los ML-IAP actuales se entrenan a Te=0. Medvedev (P5) muestra que los efectos electrónicos importan. Incorporar Te en ML-IAP para aleaciones de 5+ componentes es un problema abierto.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">Ver análisis completo ▾</span>
+    <div class="expand-content">
+      <p class="sub"><strong>Paper más cercano:</strong> Wood et al. (P10) proponen potenciales layered como solución teórica, pero solo demostrados en W puro. Medvedev (P5) resuelve el problema para HEA con tight-binding, no ML-IAP.</p>
+      <p class="sub" style="margin-top:6px"><strong>Metodología necesaria:</strong> Entrenar ML-IAP a múltiples Te usando datos de DFT de temperatura electrónica finita; combinar con TTM para simulaciones de cascadas bajo SHI o láser.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--red)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G4</span>
-    <span class="card-title">¿Cómo predecir propiedades mecánicas directamente desde el estado de defectos?</span>
-  </div>
-  <div class="card-brief"><b>Existe porque:</b> el salto microestructura→mecánica requiere múltiples capas de modelado con errores acumulativos.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Más cerca de resolverlo</div>
-      <div class="db-text">Dudarev et al. 2018 propone un formalismo para transferir propiedades mecánicas atómicas directamente a FEM. Reali menciona modelos de endurecimiento con barreras débiles/fuertes. Swinburne & Dudarev 2018 explica la transición frágil-dúctil por kink-limited Orowan.</div>
+  <!-- Vacío 4 -->
+  <div class="card card-glow-coral" style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+      <h3>4. Conexión cuantitativa daño primario → propiedades mecánicas</h3>
+      <span class="badge badge-coral">Puente débil</span>
     </div>
-    <div class="db">
-      <div class="db-label">Qué se necesita</div>
-      <div class="db-text">Validación experimental de la cadena completa: MD de cascadas → KMC de evolución → DD → FEM → comparación con ensayos mecánicos. Nadie ha cerrado este loop para un material específico bajo condiciones controladas.</div>
+    <p class="sub">Los papers de MD reportan conteos de defectos. Los de mecánica modelan el continuo. El puente cuantitativo entre ambos es débil y depende de parámetros ajustados ad hoc.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">Ver análisis completo ▾</span>
+    <div class="expand-content">
+      <p class="sub"><strong>Paper más cercano:</strong> Lin et al. (P4) conectan MD con CPFEM para nanoindentación en aceros irradiados. Yu et al. (P3) acoplan cluster dynamics con grain boundary dynamics.</p>
+      <p class="sub" style="margin-top:6px"><strong>Metodología necesaria:</strong> Frameworks ICME completos (como describe Tonks P9) con parametrización bottom-up sin ajustes ad hoc, validados contra datos experimentales de reactor.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--red)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G5</span>
-    <span class="card-title">¿Son los potenciales ML fiables para cascadas de alta energía (>50 keV PKA)?</span>
-  </div>
-  <div class="card-brief"><b>Existe porque:</b> los potenciales ML se entrenan típicamente con datos de equilibrio o baja energía; las cascadas son extremadamente lejos de equilibrio.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Más cerca de resolverlo</div>
-      <div class="db-text"><b>Jiang et al. 2026 dan una respuesta parcial definitiva:</b> DPA2-5E (pretrained LAM fine-tuned solo con datos quinarios) reproduce cascadas de 2-10 keV en Ta-Nb-W-Mo-V y subsistemas con fidelidad estadística idéntica a DPA2-All. Esto demuestra que el pretraining multi-task resuelve el problema de datos para cascadas de baja-media energía. Sin embargo, cascadas >50 keV PKA no han sido testeadas con este framework.</div>
+  <!-- Vacío 5 -->
+  <div class="card card-glow-coral">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+      <h3>5. Diseño inverso de aleaciones resistentes a radiación</h3>
+      <span class="badge badge-coral">Nadie lo ha intentado</span>
     </div>
-    <div class="db">
-      <div class="db-label">Qué falta</div>
-      <div class="db-text">Extensión a energías PKA >50 keV donde shockwaves supersónicas dominan (relevante para fusión). Benchmark contra DFT-MD (factible para <5 keV). Validación del potencial repulsivo ZBL pegado ad hoc a cortas distancias. Liu et al. usan NEP para MoNbTaVW con CSRO a 10-50 keV, complementando el rango de Jiang.</div>
+    <p class="sub">Todos los papers actuales analizan aleaciones existentes. Nadie ha usado las herramientas computacionales para predecir composiciones óptimas ab initio.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">Ver análisis completo ▾</span>
+    <div class="expand-content">
+      <p class="sub"><strong>Paper más cercano:</strong> Tonks et al. (P9) describen la visión ICME para diseño de materiales nucleares. Jiang (P8) muestra que los ML-IAP escalan a composiciones arbitrarias.</p>
+      <p class="sub" style="margin-top:6px"><strong>Metodología necesaria:</strong> Optimización bayesiana o generativa sobre el espacio composicional, usando ML-IAP para evaluar rápidamente cascadas + propiedades mecánicas como función objetivo.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--red)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G6</span>
-    <span class="card-title">¿Es el CSRO estable bajo irradiación, o es una mejora transitoria?</span>
+</section>
+
+<!-- ====================================================
+     TAB 4 — AUDITORÍA DE MÉTODOS (Prompt 5)
+     ==================================================== -->
+<section class="panel" id="tab4">
+
+  <h2>Metodologías utilizadas en los 10 papers</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Metodología</th><th>Papers</th><th>Rol en el campo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-teal">MD clásica</span></td>
+          <td>P1, P4, P5, P6, P7</td>
+          <td>Base del campo — resuelve cascadas individuales con resolución atómica</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-purple">MD + ML-IAP</span></td>
+          <td>P2, P8</td>
+          <td>Vanguardia — precisión tipo DFT a costo computacional de MD clásica</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">DFT / ab initio</span></td>
+          <td>P1, P8, P10</td>
+          <td>Referencia de precisión y fuente de datos de entrenamiento para ML-IAP</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-amber">Multiescala (ICME)</span></td>
+          <td>P3, P9</td>
+          <td>Infrautilizada — solo 2 de 10 papers lo abordan directamente</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-coral">Tight-binding</span></td>
+          <td>P5</td>
+          <td>Nicho — régimen ultrarrápido con excitaciones electrónicas</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-green">Teoría / Revisión</span></td>
+          <td>P1, P9, P10</td>
+          <td>Marcos conceptuales, visión de campo y propuestas teóricas</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="card-brief"><b>Existe porque:</b> Liu et al. demuestran que el CSRO mejora la resistencia a radiación pero se degrada a solo 0.03 dpa.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">El hallazgo clave</div>
-      <div class="db-text">En MoNbTaVW BCC, el CSRO (pares Mo-Ta y Mo-Nb tipo B2) facilita la difusión de intersticiales (E_m baja de 1.33 a 1.08 eV) y suprime la de vacancias (E_m sube de 1.10 a 1.54 eV). Este desbalance aumenta la recombinación de FPs durante la fase de recuperación. Pero 1000 cascadas de 10 keV (≈0.03 dpa) degradan los parámetros Warren-Cowley por debajo de 0.3.</div>
+
+  <h2>Diagnóstico metodológico</h2>
+  <div class="grid3">
+    <div class="card card-glow-blue">
+      <span class="badge badge-blue">Dominante</span>
+      <h3>MD (clásica + ML)</h3>
+      <p class="sub">Único método que puede resolver cascadas de desplazamiento individuales con resolución atómica. Dominancia justificada para daño primario, pero crea un sesgo sistemático hacia escalas de picosegundos a nanosegundos.</p>
     </div>
-    <div class="db">
-      <div class="db-label">Implicación</div>
-      <div class="db-text">Si el CSRO no sobrevive más allá de dosis muy bajas, su beneficio para tolerancia a radiación es transitorio. Posibles soluciones: bordes de grano o interfaces de fase que re-estabilicen el orden local. Esto conecta directamente con el trabajo de nanoestructurados de Nordlund y la estrategia de diseño composicional de Reali.</div>
+    <div class="card card-glow-amber">
+      <span class="badge badge-amber">Infrautilizada</span>
+      <h3>ICME multiescala</h3>
+      <p class="sub">Solo 2 de 10 papers lo abordan directamente, a pesar de que todos reconocen que es necesario para conectar con propiedades de ingeniería medibles.</p>
     </div>
-  </div>
-</div>
-
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--red)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--red-light);color:var(--red-dark)">G7</span>
-    <span class="card-title">¿Cómo se acoplan el clustering de intersticiales, la formación de dislocaciones y el atrapamiento de solutos en aleaciones FCC complejas?</span>
-  </div>
-  <div class="card-brief"><b>Existe porque:</b> Lin et al. muestran la cadena completa pero solo con potenciales EAM clásicos.</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-label">Lo que muestra Lin</div>
-      <div class="db-text">En IN617 (Ni-Cr-Co FCC), 75 cascadas sucesivas revelan: acumulación casi-lineal de FPs, asimetría dramática intersticiales/vacancias, clusters de intersticiales con Cr/Co atrapados, densidad de dislocaciones que satura a ~4.5×10⁻⁴ Å⁻², reorganización continua de la red de dislocaciones parciales (Shockley dominante). Todo a 300K con EAM+ZBL.</div>
-    </div>
-    <div class="db">
-      <div class="db-label">Qué falta</div>
-      <div class="db-text">Repetir con potenciales ML (como el framework DPA2 de Jiang) para verificar la cuantificación. Extender a T de servicio (>900K para HP-MSR) donde la movilidad de vacancias cambia radicalmente. Incluir los elementos menores de IN617 (Mo, Al, Ti) que afectan precipitación y segregación.</div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ======================= TAB 5: METODOLOGÍAS ======================= -->
-<div class="section" id="methods">
-<h2 class="sec-head">Auditoría de metodologías</h2>
-<p class="sec-desc">Qué métodos dominan, cuáles están subutilizados, y dónde está la debilidad.</p>
-
-<div class="tbl-wrap">
-<table>
-<tr>
-  <th>Metodología</th>
-  <th>Uso en N-2018</th>
-  <th>Uso en R-2026</th>
-  <th>Estatus</th>
-</tr>
-<tr>
-  <td><b>MD clásica</b></td>
-  <td>Método central. Cascadas en Fe, Cu, Ni, Si, W. Calibración de ARC-DPA/RPA.</td>
-  <td>Base de la cadena multiescala. CRA como extensión.</td>
-  <td style="color:var(--green-dark)"><b>Dominante</b></td>
-</tr>
-<tr>
-  <td><b>BCA (SRIM/TRIM)</b></td>
-  <td>Analizado críticamente. Base histórica del NRT. "Internamente inconsistente."</td>
-  <td>No discutido específicamente.</td>
-  <td style="color:var(--amber-dark)">En declive</td>
-</tr>
-<tr>
-  <td><b>DFT / ab initio MD</b></td>
-  <td>Para TDE en Si, Ge, Fe. Para cerámicos complejos. Referencia "gold standard."</td>
-  <td>DFT + Cluster Expansion + MC para W-Re-Os. Base para potenciales ML.</td>
-  <td style="color:var(--green-dark)"><b>Creciente</b></td>
-</tr>
-<tr>
-  <td><b>Potenciales ML</b></td>
-  <td>No discutido (2018).</td>
-  <td>"Sección clave." Para HEAs, He-vac, H en metales.</td>
-  <td style="color:var(--accent-dark)"><b>Emergente — transformador. Jiang: DPA2 pretrained; Liu: NEP para CSRO</b></td>
-</tr>
-<tr>
-  <td><b>Hybrid MC/MD</b></td>
-  <td>No discutido.</td>
-  <td>Mencionado para evolución química.</td>
-  <td style="color:var(--green-dark)"><b>Creciente — Liu usa MC/MD para CSRO en 6.75M átomos</b></td>
-</tr>
-<tr>
-  <td><b>Cascadas superpuestas MD</b></td>
-  <td>Discutido como frontera (sec. 6.4). Dose rates irrealistas.</td>
-  <td>CRA como alternativa eficiente.</td>
-  <td style="color:var(--green-dark)"><b>Activo — Lin: 75 cascadas en IN617; Liu: 1000 cascadas en MoNbTaVW</b></td>
-</tr>
-<tr>
-  <td><b>KMC / OKMC</b></td>
-  <td>Mencionado como puente MD→largo plazo (Bjorkäs 2012).</td>
-  <td>Parte de la cadena multiescala.</td>
-  <td style="color:var(--amber-dark)">Subutilizado</td>
-</tr>
-<tr>
-  <td><b>Experimento: resistividad criogénica</b></td>
-  <td>Validación principal de daño en metales. "Workhorse."</td>
-  <td>No discutido.</td>
-  <td style="color:var(--text3)">Maduro, poco nuevo</td>
-</tr>
-<tr>
-  <td><b>Experimento: TEM in situ</b></td>
-  <td>Clusters en W (Yi 2015). Grafeno (desplazamiento individual).</td>
-  <td>No discutido específicamente.</td>
-  <td style="color:var(--amber-dark)"><b>Subutilizado</b> — potencial enorme</td>
-</tr>
-<tr>
-  <td><b>TD-DFT</b></td>
-  <td>Mencionado como perspectiva para stopping electrónico.</td>
-  <td>No discutido.</td>
-  <td style="color:var(--accent-dark)">Emergente</td>
-</tr>
-</table>
-</div>
-
-<div style="margin-top:1.5rem;">
-<div class="db">
-  <div class="db-label">Método más débil identificado</div>
-  <div class="db-text"><b>BCA/SRIM para producción de defectos</b> — Nordlund lo critica explícitamente como "internamente inconsistente" pero sigue siendo usado masivamente en la comunidad de implantación iónica. Está mantenido por inercia institucional.</div>
-</div>
-<div class="db">
-  <div class="db-label">Método más subutilizado</div>
-  <div class="db-text"><b>TEM aberration-corrected in situ a T criogénica</b> — Ambos papers reconocen que cerraría la brecha de escala entre MD y observación. Solo existe un puñado de estudios (Yi 2015 en W, Meyer 2012 en grafeno).</div>
-</div>
-</div>
-</div>
-
-<!-- ======================= TAB 6: SÍNTESIS ======================= -->
-<div class="section" id="synthesis">
-<h2 class="sec-head">Síntesis maestra</h2>
-<p class="sec-desc">No un resumen de papers, sino el estado del campo. 400 palabras.</p>
-
-<div style="font-size:0.88rem;color:var(--text);line-height:1.85;max-width:680px;">
-<p style="margin-bottom:1rem;">El campo del daño por radiación en materiales ha convergido en un entendimiento cuantitativo del daño primario en metales puros: una cascada de desplazamiento genera un heat spike donde ~70% de los defectos se recombinan atermalmente, dejando clusters de vacancias en el centro e intersticiales dispersos en la periferia. Esto está demostrado experimentalmente (resistividad criogénica) y computacionalmente (MD con múltiples potenciales) para Fe, Cu, Ni, W. El modelo ARC-DPA captura esta física con una función de eficiencia de dos parámetros ajustada a MD y validada contra experimentos.</p>
-
-<p style="margin-bottom:1rem;"><b>Lo que sigue contestado:</b> la fracción de daño que termina en clusters (vs. defectos puntuales aislados) varía significativamente entre potenciales interatómicos y no es directamente medible por TEM para clusters pequeños (<2 nm). El acoplamiento electrón-fonón a bajas energías permanece sin resolver, y su efecto en la producción de defectos puede ser del orden de 20-30%. En metales pesados (Au, Pt, W), la producción de defectos puede ser supralineal a altas energías por shockwaves supersónicas, lo que viola las asunciones del ARC-DPA. Para aleaciones complejas (HEAs, SMART alloys), el mecanismo de resistencia a radiación está cualitativamente entendido (heterogeneidad atómica ralentiza difusión de defectos) pero no cuantitativamente predicho.</p>
-
-<p style="margin-bottom:1rem;"><b>Lo probado más allá de duda razonable:</b> (1) NRT-dpa sobreestima defectos sobrevivientes por factor ~3 en cascadas energéticas en metales. (2) La mezcla atómica es un orden de magnitud mayor que lo predicho por NRT. (3) Los metales puros nunca se amorfizan bajo irradiación, a diferencia de semiconductores. (4) Los heat spikes son sistemas termodinámicos locales reales (~10,000 K, ~10 ps). (5) Los bordes de grano y interfaces actúan como sumideros efectivos de defectos.</p>
-
-<p><b>La pregunta más importante sin responder:</b> ¿Cómo se comportan los materiales candidatos para fusión (W, RAFM steels, HEAs) bajo irradiación simultánea de neutrones de 14 MeV + transmutación + temperatura de servicio (~300-1000°C) durante décadas? No existe fuente de neutrones de fusión para medir esto. Los avances recientes son alentadores — Jiang et al. demuestran que un solo modelo DPA2 pretrained puede simular cascadas en aleaciones quinarias y sus subsistemas sin datos adicionales, Liu et al. revelan que el orden químico de corto alcance mejora la resistencia a radiación pero se degrada rápidamente, y Lin et al. mapean la cadena completa defectos→dislocaciones en una superaleación industrial. Pero el loop completo modelado→validación→predicción para condiciones de reactor real sigue abierto.</p>
-</div>
-</div>
-
-<!-- ======================= TAB 7: SUPUESTOS ======================= -->
-<div class="section" id="assumptions">
-<h2 class="sec-head">Supuestos no testados</h2>
-<p class="sec-desc">Lo que la mayoría de los papers asumen pero nadie justifica explícitamente.</p>
-
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--amber)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--amber-light);color:var(--amber-dark)">A1</span>
-    <span class="card-title">El daño primario de una cascada aislada es representativo del daño bajo irradiación continua</span>
-  </div>
-  <div class="card-brief">Depende fuertemente de: N, R</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">Toda la calibración de ARC-DPA y la mayoría de los datos MD son para cascadas aisladas en cristal perfecto. Nordlund reconoce que cascadas superpuestas pueden aniquilar daño previo (sec. 6.4), y que la tasa de dosis en MD es ordenes de magnitud mayor que en experimentos. Si esta asunción falla: las constantes ARC-DPA serían dependientes de dosis acumulada, no solo de energía PKA.</div>
+    <div class="card card-glow-red">
+      <span class="badge badge-red">Más débil</span>
+      <h3>P6 — Lin (IN617)</h3>
+      <p class="sub">Usa un modelo ternario simplificado Ni-Cr-Co con potencial EAM clásico para representar una superaleación de 6+ elementos. Los resultados cuantitativos son cuestionables para IN617 real.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--amber)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--amber-light);color:var(--amber-dark)">A2</span>
-    <span class="card-title">La aproximación Born-Oppenheimer es válida durante cascadas</span>
-  </div>
-  <div class="card-brief">Depende: N (toda la sección de MD)</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">Nordlund menciona que cálculos cuánticos completos muestran que para proyectiles ligeros, el cambio dinámico de polarización electrónica puede modificar trayectorias. Si falla: toda la base de MD clásica necesitaría correcciones no-adiabáticas, especialmente para H y He en metales — exactamente los productos de transmutación relevantes para fusión.</div>
+</section>
+
+<!-- ====================================================
+     TAB 5 — SUPUESTOS OCULTOS (Prompt 7)
+     ==================================================== -->
+<section class="panel" id="tab5">
+
+  <h2>Supuestos que el campo comparte pero nunca prueba</h2>
+
+  <div class="card card-glow-purple" style="margin-bottom:14px">
+    <span class="badge badge-purple">Supuesto 1</span>
+    <h3>La MD captura la física esencial de las cascadas</h3>
+    <p class="sub">Grupo A (P1, P2, P4, P5, P6, P7, P8) asume que la dinámica molecular captura adecuadamente la física de las cascadas de desplazamiento y la evolución temprana de defectos.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">¿Qué pasaría si fuera incorrecto? ▾</span>
+    <div class="expand-content">
+      <p class="sub">Todos los conteos de defectos, factores de eficiencia y comparaciones entre aleaciones serían cuantitativamente inválidos. El campo entero tendría que reconstruirse sobre métodos de primeros principios que actualmente son prohibitivamente costosos para cascadas completas.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--amber)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--amber-light);color:var(--amber-dark)">A3</span>
-    <span class="card-title">Las cascadas en aleaciones complejas siguen la misma física que en metales puros</span>
-  </div>
-  <div class="card-brief">Depende: R (toda la sección de HEAs y SMART alloys)</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">Reali asume que ARC-DPA/CRC-DPA se pueden extender a HEAs. Pero en aleaciones multicomponente, la energía de formación de defectos varía localmente por composición, los heat spikes tienen dinámica de enfriamiento diferente por conductividad térmica alterada, y la segregación inducida cambia la composición local. Si falla: necesitamos modelos de daño composition-aware, no solo material-averaged.</div>
+  <div class="card card-glow-purple" style="margin-bottom:14px">
+    <span class="badge badge-purple">Supuesto 2</span>
+    <h3>La complejidad composicional siempre mejora la resistencia</h3>
+    <p class="sub">Grupo B (P2, P5, P8) comparte la premisa de que la distorsión de red, difusión lenta y efecto cocktail suprimen la movilidad de defectos y favorecen la recombinación.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">¿Qué pasaría si fuera incorrecto? ▾</span>
+    <div class="expand-content">
+      <p class="sub">Todo el programa de investigación en HEA para aplicaciones nucleares perdería su justificación principal. Los recursos se redirigirían a la optimización de aleaciones convencionales bien establecidas.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--amber)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--amber-light);color:var(--amber-dark)">A4</span>
-    <span class="card-title">La cadena multiescala es secuencialmente acoplable</span>
-  </div>
-  <div class="card-brief">Depende: R (argumento central de multiescala)</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">Reali presenta DFT → MD → KMC → Rate theory → FEM como cadena lineal. Asume que la salida de cada nivel es input suficiente para el siguiente. Pero hay retroalimentación: la microestructura evoluciona y afecta las cascadas posteriores (producción bias, absorción en dislocaciones). Si falla: se necesitan métodos concurrentes (tipo QM/MM) a cada interfaz, multiplicando el costo computacional por órdenes de magnitud.</div>
+  <div class="card card-glow-purple" style="margin-bottom:14px">
+    <span class="badge badge-purple">Supuesto 3</span>
+    <h3>Los potenciales interatómicos son el cuello de botella crítico</h3>
+    <p class="sub">Grupo C (P1, P2, P8, P10) asume que mejorar los potenciales es la prioridad para avanzar el campo.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">¿Qué pasaría si fuera incorrecto? ▾</span>
+    <div class="expand-content">
+      <p class="sub">Si el cuello de botella real fuera la falta de validación experimental o la desconexión multiescala, la inversión masiva en desarrollo de ML-IAP sería una optimización prematura del componente equivocado.</p>
     </div>
   </div>
-</div>
 
-<div class="card" onclick="tog(this)">
-  <div class="card-bar" style="background:var(--amber)"></div>
-  <div class="card-head">
-    <span class="card-id" style="background:var(--amber-light);color:var(--amber-dark)">A5</span>
-    <span class="card-title">La energía umbral de desplazamiento es una propiedad del material, no del estado del material</span>
-  </div>
-  <div class="card-brief">Depende: N, R (en todas las ecuaciones de daño)</div>
-  <div class="card-body">
-    <div class="db">
-      <div class="db-text">Nordlund muestra que E_d depende de dirección cristalina, temperatura, y cercanía a defectos existentes. Sin embargo, ARC-DPA usa un E_d promedio único. Reali hereda esto. Si falla completamente: E_d debería ser un tensor dependiente del entorno local — que es exactamente el tipo de cantidad que un potencial ML podría predecir pero que destruiría la simplicidad analítica de cualquier modelo dpa.</div>
+  <div class="card card-glow-purple">
+    <span class="badge badge-purple">Supuesto 4</span>
+    <h3>La integración multiescala es necesaria y suficiente</h3>
+    <p class="sub">Grupo D (P1, P3, P4, P9) asume que conectar DFT → MD → cluster dynamics → crystal plasticity → FEM resolverá el problema predictivo.</p>
+    <span class="expand-toggle" onclick="toggleExpand(this)">¿Qué pasaría si fuera incorrecto? ▾</span>
+    <div class="expand-content">
+      <p class="sub">Si existen fenómenos emergentes en escalas intermedias que ningún método individual captura, el paradigma de «pasar información entre escalas» fallaría fundamentalmente. Se necesitarían enfoques completamente nuevos de simulación concurrente.</p>
     </div>
   </div>
-</div>
-</div>
 
-<!-- ======================= TAB 8: MAPA ======================= -->
-<div class="section" id="map">
-<h2 class="sec-head">Mapa de conocimiento estructurado</h2>
-<p class="sec-desc">Para imprimir y pegar sobre el escritorio.</p>
+</section>
 
-<div class="outline">
+<!-- ====================================================
+     TAB 6 — SÍNTESIS FINAL (Prompts 6 + 9)
+     ==================================================== -->
+<section class="panel" id="tab6">
 
-<div class="o-section">
-  <span class="o-label" style="background:var(--accent-light);color:var(--accent-dark)">Tesis central</span>
-  <div class="o-title">El daño primario por radiación es cuantitativamente predecible en metales puros, pero la extensión a aleaciones de fusión bajo condiciones reales requiere integración multiescala validada que aún no existe.</div>
-</div>
+  <h2>Síntesis maestra</h2>
 
-<div class="o-section">
-  <span class="o-label" style="background:var(--green-light);color:var(--green-dark)">Pilares establecidos</span>
-  <ul class="o-list">
-    <li><b>Recombinación atermal:</b> ~70% de defectos NRT se recombinan en el heat spike (~1-10 ps, ~10,000 K). Demostrado por MD + experimentos criogénicos en Fe, Cu, Ni, W.</li>
-    <li><b>ARC-DPA/RPA como mejora del NRT:</b> Corrige sobreestimación de defectos (factor ~3) y subestimación de mezcla (factor ~30). Constantes tabuladas para 6 metales. Validado bajo condiciones de fisión.</li>
-    <li><b>Heat spikes son sistemas termodinámicos locales:</b> Distribución Maxwell-Boltzmann establecida en <3 vibraciones de red. Explica recristalización, formación de clusters, mezcla atómica.</li>
-    <li><b>Los metales puros no se amorfizan:</b> Alta fracción de empaquetamiento → recristalización siempre gana. Contraste fundamental con semiconductores.</li>
-    <li><b>Defectos siguen distribuciones de ley de potencia:</b> Verificado en W con TEM in situ criogénico (Yi 2015, Sand 2017). Base para extrapolación a escalas no observables.</li>
-  </ul>
-</div>
-
-<div class="o-section">
-  <span class="o-label" style="background:var(--amber-light);color:var(--amber-dark)">Zonas contestadas</span>
-  <ul class="o-list">
-    <li><b>Resistencia a radiación de HEAs — mecanismo vs. cuantificación:</b> El mecanismo cualitativo (heterogeneidad reduce difusión) está establecido. La predicción cuantitativa no: pequeñas variaciones composicionales dan grandes diferencias. Liu et al. muestran que el CSRO mejora resistencia en BCC RHEAs pero se degrada a 0.03 dpa.</li>
-    <li><b>Stopping electrónico a baja energía y e-ph coupling:</b> Afecta producción de defectos ~20-30%. TD-DFT puede resolver esto en ~5 años.</li>
-    <li><b>Transmutación como co-driver de daño:</b> Reali dice "tan importante como desplazamiento." Nordlund lo excluye. La interacción acoplada no está modelada.</li>
-  </ul>
-</div>
-
-<div class="o-section">
-  <span class="o-label" style="background:var(--red-light);color:var(--red-dark)">Preguntas frontera</span>
-  <ul class="o-list">
-    <li><b>¿Puede el pretraining multi-task (DPA2) escalar a cascadas de alta energía (>50 keV) en aleaciones complejas?</b> — Jiang demuestra viabilidad a 2-10 keV. El salto a energías de fusión es el test definitivo.</li>
-    <li><b>¿Se puede estabilizar el CSRO bajo irradiación para mantener su beneficio?</b> — Liu demuestra que 0.03 dpa lo destruye. ¿Bordes de grano o interfaces de fase pueden re-estabilizarlo?</li>
-    <li><b>¿Se puede cerrar el loop multiescala MD→KMC→DD→FEM→ensayo mecánico para un material real?</b> — Lin da el primer paso conectando cascadas→dislocaciones en IN617.</li>
-  </ul>
-</div>
-
-<div class="o-section">
-  <span class="o-label" style="background:var(--blue-light);color:var(--blue-dark)">Lectura esencial — 5 papers en orden</span>
-  <ul class="o-list">
-    <li><b>1. Nordlund et al. 2018</b> — Leer primero. La base: daño primario, por qué NRT falla, ARC-DPA/RPA, limitaciones de MD.</li>
-    <li><b>2. Stoller 2012</b> (Chapter 1.11, Comprehensive Nuclear Materials) — Más pedagógico, menos derivaciones nuevas.</li>
-    <li><b>3. Reali et al. 2026</b> — El estado del arte para fusión: potenciales ML, HEAs, transmutación, SMART alloys, cadena multiescala.</li>
-    <li><b>4. Jiang et al. 2026</b> — Demostración práctica de que pretraining multi-task resuelve el cuello de botella de datos para aleaciones complejas. Cascadas + mecánica con un solo modelo.</li>
-    <li><b>5. Liu et al. 2025</b> — El efecto del CSRO en BCC RHEAs: mecanismo de mejora Y su limitación fundamental (degradación bajo dosis). Complementar con Lin et al. para FCC.</li>
-  </ul>
-  <p class="o-note">Después: Sand et al. 2017 (distribución de clusters en W) y Granberg et al. 2016 (HEAs cascadas superpuestas) para los debates activos.</p>
-</div>
-
-</div>
-
-<div class="print-hint">
-  Imprime esta pestaña con Ctrl+P → selecciona solo esta página. Pin it above your desk.
-</div>
-</div>
-
-<!-- ======================= FINAL: EXPLICACIÓN ======================= -->
-<div class="section" id="explain">
-<h2 class="sec-head">Para una persona inteligente, no experta, en 5 minutos</h2>
-<p class="sec-desc">Sin jerga. Sin rodeos. Sin aclaraciones académicas innecesarias.</p>
-
-<div style="font-size:0.95rem;color:var(--text);line-height:2;max-width:680px;">
-
-<div class="db" style="margin-bottom:2rem;">
-  <div class="db-label" style="font-size:0.7rem;letter-spacing:0.15em;">Lo que este campo ha demostrado — en una oración</div>
-  <div style="font-family:var(--serif);font-size:1.15rem;line-height:1.5;margin-top:8px;">
-    Cuando una partícula de alta energía golpea un material sólido, la mayor parte del daño se repara solo en las primeras billonésimas de segundo — y ahora sabemos predecir cuánto daño sobrevive, cuántos átomos cambian de lugar, y cómo la composición química de una aleación puede hacer que ese material resista mejor o peor.
+  <div class="card card-hero" style="margin-bottom:1.5rem;text-align:left;padding:1.5rem 1.8rem">
+    <p class="meta-text" style="margin-bottom:8px;position:relative;text-transform:uppercase;letter-spacing:0.08em">En una sola oración</p>
+    <p style="font-size:1.05rem;line-height:1.65;position:relative">
+      Cuando una partícula de alta energía golpea un metal en un reactor nuclear, produce alrededor de un tercio de los defectos que se creía hace 40 años, y los nuevos metales de «alta complejidad» pueden gestionar esos defectos mucho mejor que los metales tradicionales, lo cual computadoras modernas con inteligencia artificial pueden ahora predecir con precisión atómica.
+    </p>
   </div>
-</div>
 
-<div class="db" style="margin-bottom:2rem;">
-  <div class="db-label" style="font-size:0.7rem;letter-spacing:0.15em;">Lo que todavía no sabe — con honestidad</div>
-  <div style="font-size:0.9rem;color:var(--text2);line-height:1.85;margin-top:8px;">
-    Nadie ha visto qué pasa cuando un material real recibe décadas de bombardeo con los neutrones específicos de un reactor de fusión, porque esa fuente de neutrones no existe todavía. Todo lo que tenemos son simulaciones en computadora que cubren desde la escala de átomos individuales hasta la de componentes ingenieriles, pero nunca se ha verificado la cadena completa de principio a fin contra un experimento real. Además, las herramientas de inteligencia artificial que ahora aceleran estas simulaciones funcionan bien para las condiciones en las que fueron entrenadas, pero nadie ha comprobado que sigan siendo confiables en las condiciones más extremas. Y un truco prometedor — organizar los átomos de una aleación en un patrón local especial que mejora su resistencia — se destruye con una dosis de radiación irrisoriamente baja.
+  <div class="grid2">
+    <div class="card card-glow-green">
+      <h3 style="color:var(--green-400)">Demostrado más allá de duda razonable</h3>
+      <ul style="list-style:none;padding:0;margin-top:10px">
+        <li class="sub" style="padding:4px 0">→ Las cascadas producen ~⅓ de los defectos que predice NRT</li>
+        <li class="sub" style="padding:4px 0">→ Los intersticiales dominan la microestructura temprana post-irradiación</li>
+        <li class="sub" style="padding:4px 0">→ La complejidad composicional generalmente mejora la resistencia a radiación</li>
+        <li class="sub" style="padding:4px 0">→ Los ML-IAP son superiores a los potenciales empíricos para aleaciones multicomponente</li>
+      </ul>
+    </div>
+    <div class="card card-glow-amber">
+      <h3 style="color:var(--amber-400)">Sigue en disputa</h3>
+      <ul style="list-style:none;padding:0;margin-top:10px">
+        <li class="sub" style="padding:4px 0">→ Mecanismo exacto del CSRO (dependiente del sistema BCC/FCC)</li>
+        <li class="sub" style="padding:4px 0">→ Si los efectos electrónicos importan para cascadas de baja energía en aleaciones complejas</li>
+        <li class="sub" style="padding:4px 0">→ Cómo traducir cuantitativamente conteos de defectos de MD en propiedades mecánicas macroscópicas</li>
+      </ul>
+    </div>
   </div>
-</div>
 
-<div class="db">
-  <div class="db-label" style="font-size:0.7rem;letter-spacing:0.15em;">La única implicación que importa</div>
-  <div style="font-size:0.9rem;color:var(--text2);line-height:1.85;margin-top:8px;">
-    Los reactores de fusión — que prometen energía prácticamente ilimitada y limpia — no se pueden construir hasta que sepamos que sus paredes internas van a sobrevivir. Y no podemos probar esas paredes porque el reactor no existe. Así que toda la apuesta está en que las simulaciones computacionales sean lo suficientemente buenas para diseñar el material correcto antes de construir la máquina. Este campo está en una carrera contra el reloj para hacer que esas simulaciones sean confiables. Los últimos 3 años muestran avances reales: modelos de IA que necesitan muchos menos datos, simulaciones de millones de átomos que antes eran imposibles, y un entendimiento cada vez más fino de cómo la química a escala atómica determina si un material se endurece, se hincha o se fragmenta. Pero la validación final sigue pendiente.
+  <div class="card card-glow-red" style="margin-top:14px">
+    <h3 style="color:var(--red-400)">La admisión honesta</h3>
+    <p class="sub" style="margin-top:6px">No sabemos cómo pasar de simular los primeros picosegundos de daño (lo que hacemos bien) a predecir si un componente de reactor va a fallar después de 30 años de servicio (lo que necesitamos). Tenemos piezas del rompecabezas a cada escala, pero el pegamento cuantitativo entre ellas es débil. Tampoco sabemos usar nuestras herramientas para <strong>diseñar</strong> un material nuevo en vez de <strong>explicar</strong> los que ya existen.</p>
   </div>
-</div>
 
-</div>
-</div>
+  <div class="card card-glow-blue" style="margin-top:14px">
+    <h3 style="color:var(--blue-400)">La implicación real que más importa</h3>
+    <p class="sub" style="margin-top:6px">Si el campo logra cerrar el puente entre simulación atomística y predicción ingenieril, se podría reducir de <strong>décadas a años</strong> el proceso de calificar nuevos materiales para reactores nucleares avanzados. Esto impacta directamente la viabilidad de la energía de fusión y de los reactores de fisión de próxima generación como fuentes de energía limpia.</p>
+    <p class="meta-text" style="margin-top:10px">El cuello de botella de los materiales es, hoy, el mayor obstáculo para la energía nuclear avanzada.</p>
+  </div>
 
-</div><!-- page -->
+</section>
+
+</div><!-- /container -->
 
 <script>
-function tog(el) {
-  const wasOpen = el.classList.contains('open');
-  el.closest('.section').querySelectorAll('.card.open').forEach(c => c.classList.remove('open'));
-  if (!wasOpen) el.classList.add('open');
+function showTab(i) {
+  document.querySelectorAll('.panel').forEach(function(p, j) {
+    p.classList.toggle('active', j === i);
+  });
+  document.querySelectorAll('.nav-tab').forEach(function(t, j) {
+    t.classList.toggle('active', j === i);
+  });
+  window.scrollTo({ top: document.getElementById('nav').offsetTop - 20, behavior: 'smooth' });
 }
-function showTab(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
-  window.scrollTo({top: document.querySelector('.nav').offsetTop - 20, behavior: 'smooth'});
+
+function toggleExpand(el) {
+  var content = el.nextElementSibling;
+  var isOpen = content.classList.toggle('open');
+  var baseText = el.textContent.replace(' ▾', '').replace(' ▴', '');
+  el.textContent = baseText + (isOpen ? ' ▴' : ' ▾');
 }
 </script>
+
 </body>
 </html>
